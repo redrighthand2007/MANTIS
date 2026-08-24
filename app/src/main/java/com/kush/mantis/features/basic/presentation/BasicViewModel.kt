@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kush.mantis.features.basic.domain.EvaluateExpressionUseCase
 import com.kush.mantis.features.history.data.CalculationHistory
-import com.kush.mantis.features.history.data.HistoryDao
+import com.kush.mantis.features.history.domain.InsertHistoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BasicViewModel @Inject constructor(
     private val evaluateExpressionUseCase: EvaluateExpressionUseCase,
-    private val historyDao: HistoryDao
+    private val insertHistoryUseCase: InsertHistoryUseCase
 ) : ViewModel() {
 
     private val _expression = MutableStateFlow("")
@@ -50,7 +50,7 @@ class BasicViewModel @Inject constructor(
                     _result.value = finalResult
                     
                     viewModelScope.launch {
-                        historyDao.insertHistory(
+                        insertHistoryUseCase(
                             CalculationHistory(
                                 expression = _expression.value,
                                 result = finalResult,

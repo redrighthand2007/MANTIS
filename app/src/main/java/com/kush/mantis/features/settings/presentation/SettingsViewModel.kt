@@ -2,7 +2,7 @@ package com.kush.mantis.features.settings.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kush.mantis.features.settings.data.SettingsRepository
+import com.kush.mantis.features.settings.domain.SettingsUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -12,20 +12,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val repository: SettingsRepository
+    private val useCases: SettingsUseCases
 ) : ViewModel() {
 
-    val themeMode: StateFlow<String> = repository.themeModeFlow
+    val themeMode: StateFlow<String> = useCases.themeModeFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "System")
 
-    val hapticFeedback: StateFlow<Boolean> = repository.hapticFeedbackFlow
+    val hapticFeedback: StateFlow<Boolean> = useCases.hapticFeedbackFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
 
     fun setThemeMode(mode: String) {
-        viewModelScope.launch { repository.setThemeMode(mode) }
+        viewModelScope.launch { useCases.setThemeMode(mode) }
     }
 
     fun setHapticFeedback(enabled: Boolean) {
-        viewModelScope.launch { repository.setHapticFeedback(enabled) }
+        viewModelScope.launch { useCases.setHapticFeedback(enabled) }
     }
 }

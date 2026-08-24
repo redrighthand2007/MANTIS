@@ -24,4 +24,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Mantis"
 include(":app")
+include(":app")
  

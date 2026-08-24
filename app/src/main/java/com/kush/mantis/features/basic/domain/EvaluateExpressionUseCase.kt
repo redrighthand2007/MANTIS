@@ -2,6 +2,7 @@ package com.kush.mantis.features.basic.domain
 
 import com.kush.mantis.core.util.NumberFormatter
 import org.mariuszgromada.math.mxparser.Expression
+import org.mariuszgromada.math.mxparser.mXparser
 import javax.inject.Inject
 
 class EvaluateExpressionUseCase @Inject constructor() {
@@ -11,6 +12,12 @@ class EvaluateExpressionUseCase @Inject constructor() {
         val sanitizedExpression = expression
             .replace("×", "*")
             .replace("÷", "/")
+        
+        if (isDegreeMode) {
+            mXparser.setDegreesMode()
+        } else {
+            mXparser.setRadiansMode()
+        }
         
         val e = Expression(sanitizedExpression)
         val result = e.calculate()

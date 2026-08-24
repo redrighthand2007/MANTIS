@@ -21,6 +21,9 @@ class ProgrammerViewModel @Inject constructor() : ViewModel() {
     private val _inputString = MutableStateFlow("0")
     val inputString: StateFlow<String> = _inputString.asStateFlow()
 
+    private var previousValue: Long? = null
+    private var pendingOperator: String? = null
+
     fun onEvent(event: ProgrammerEvent) {
         when (event) {
             is ProgrammerEvent.SetBase -> {
@@ -51,6 +54,28 @@ class ProgrammerViewModel @Inject constructor() : ViewModel() {
                 if (event.op == "NOT") {
                     _currentValue.value = _currentValue.value.inv()
                     _inputString.value = BaseConverter.convert(_currentValue.value, _activeBase.value)
+                } else {
+                    previousValue = _currentValue.value
+                    pendingOperator = event.op
+                    _inputString.value = "0"
+                }
+            }
+            is ProgrammerEvent.OnEquals -> {
+                if (previousValue != null && pendingOperator != null) {
+                    val current = _currentValue.value
+                    val prev = previousValue!!
+                    val result = when (pendingOperator) {
+                        "AND" -> prev and current
+                        "OR" -> prev or current
+                        "XOR" -> prev xor current
+                        "<<" -> prev shl current.toInt()
+                        ">>" -> prev shr current.toInt()
+                        else -> current
+                    }
+                    _currentValue.value = result
+                    _inputString.value = BaseConverter.convert(result, _activeBase.value)
+                    previousValue = null
+                    pendingOperator = null
                 }
             }
         }
@@ -70,4 +95,5 @@ sealed class ProgrammerEvent {
     data class OnBitwiseOp(val op: String) : ProgrammerEvent()
     object OnDelete : ProgrammerEvent()
     object OnClear : ProgrammerEvent()
+    object OnEquals : ProgrammerEvent()
 }
