@@ -8,8 +8,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.kush.mantis.ui.theme.MantisGreen
 
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+
 @Composable
-fun BottomNavBar(navController: NavController) {
+fun BottomNavBar(navController: NavController, isHapticEnabled: Boolean = true) {
     val items = listOf(
         Pair("Basic", BasicRoute),
         Pair("Sci", ScientificRoute),
@@ -18,6 +21,8 @@ fun BottomNavBar(navController: NavController) {
         Pair("Hist", HistoryRoute),
         Pair("Set", SettingsRoute)
     )
+
+    val haptic = LocalHapticFeedback.current
 
     NavigationBar {
         val navBackStackEntry = navController.currentBackStackEntryAsState()
@@ -30,6 +35,9 @@ fun BottomNavBar(navController: NavController) {
             NavigationBarItem(
                 selected = selected,
                 onClick = {
+                    if (isHapticEnabled && !selected) {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    }
                     navController.navigate(routeObj) {
                         popUpTo(BasicRoute) { saveState = true }
                         launchSingleTop = true

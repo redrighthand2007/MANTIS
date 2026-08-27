@@ -34,6 +34,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val themeMode by settingsUseCases.themeModeFlow.collectAsState(initial = "System")
+            val isHapticEnabled by settingsUseCases.hapticFeedbackFlow.collectAsState(initial = true)
             
             val isDarkTheme = when (themeMode) {
                 "Dark" -> true
@@ -46,7 +47,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MantisNavHost()
+                    MantisNavHost(isHapticEnabled = isHapticEnabled)
                 }
             }
         }

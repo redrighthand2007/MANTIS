@@ -15,16 +15,18 @@ import com.kush.mantis.features.history.presentation.HistoryScreen
 import com.kush.mantis.features.settings.presentation.SettingsScreen
 
 @Composable
-fun MantisNavHost() {
+fun MantisNavHost(isHapticEnabled: Boolean = true) {
     val navController = rememberNavController()
 
     Scaffold(
-        bottomBar = { BottomNavBar(navController) }
+        bottomBar = { BottomNavBar(navController, isHapticEnabled) }
     ) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = BasicRoute,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
+            enterTransition = { androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(300)) },
+            exitTransition = { androidx.compose.animation.fadeOut(animationSpec = androidx.compose.animation.core.tween(300)) }
         ) {
             composable<BasicRoute> { BasicScreen() }
             composable<ScientificRoute> { ScientificScreen() }
