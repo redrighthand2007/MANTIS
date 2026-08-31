@@ -1,21 +1,20 @@
 <div align="center">
-  <img src="docs/images/banner.jpg" alt="Mantis Calculator Banner" width="100%"/>
+  <img src="assets/banner.jpg" alt="Mantis Calculator Banner" width="100%" style="border-radius: 12px;"/>
   
-  <br/>
-  <br/>
+  <br/><br/>
 
-  <img src="docs/images/icon.jpg" alt="Mantis Calculator" width="120" style="border-radius: 24px"/>
+  <img src="assets/icon.jpg" alt="Mantis Calculator" width="120" style="border-radius: 24px; box-shadow: 0 4px 14px rgba(0,0,0,0.1);"/>
 
-  <h1>🦗 Mantis Calculator</h1>
+  <h1>📱 Mantis Calculator</h1>
   
-  <p><strong>A privacy-first, offline Android calculator built with Jetpack Compose & Material 3</strong></p>
+  <p><strong>A privacy-first, offline, "all-in-one" Android calculator built for power users.</strong></p>
 
   <p>
-    <img src="https://img.shields.io/badge/Platform-Android-3DDC84?logo=android&logoColor=white" alt="Platform"/>
-    <img src="https://img.shields.io/badge/Language-Kotlin-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin"/>
-    <img src="https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white" alt="Compose"/>
-    <img src="https://img.shields.io/badge/Min%20SDK-26-brightgreen" alt="Min SDK"/>
-    <img src="https://img.shields.io/badge/License-MIT-blue" alt="License"/>
+    <a href="https://android.com"><img src="https://img.shields.io/badge/Platform-Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Platform"/></a>
+    <a href="https://kotlinlang.org"><img src="https://img.shields.io/badge/Kotlin-100%25-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" alt="Kotlin"/></a>
+    <a href="https://developer.android.com/jetpack/compose"><img src="https://img.shields.io/badge/Compose-Material_3-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white" alt="Compose"/></a>
+    <img src="https://img.shields.io/badge/Min_SDK-24-brightgreen?style=for-the-badge" alt="Min SDK"/>
+    <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License"/>
   </p>
 
   <p>
@@ -29,117 +28,96 @@
 
 ---
 
+## 🎯 The Problem & Solution
+
+Most calculator apps today are either too basic, fragmented across multiple apps, or bloated with intrusive ads and unnecessary permissions. 
+
+**Mantis** solves this by unifying four professional-grade calculation engines into a single, beautiful, lightning-fast application. It is completely offline, ad-free, and designed with strict separation of concerns using Clean Architecture.
+
+---
+
 ## ✨ Features
 
-| Mode | Description |
+| Mode | Highlights |
 |------|------------|
-| 🧮 **Basic** | Standard arithmetic operations with parentheses support |
-| 🔬 **Scientific** | Trigonometry, logarithms, powers, roots, constants (π, e) with 2nd-mode toggle |
-| 💻 **Programmer** | Real-time base conversion between DEC, HEX, OCT, BIN with bitwise operations |
-| 📐 **Converter** | Length, Weight & Temperature unit conversions with instant results |
-| 📜 **History** | Auto-saved calculation history stored locally in SQLite |
-| ⚙️ **Settings** | Dark/Light theme toggle, haptic feedback control |
+| 🧮 **Basic** | Standard arithmetic for everyday use, with parentheses support and precise large-number formatting. |
+| 🔬 **Scientific** | Advanced math (`sin`, `cos`, `tan`, `log`, `ln`, `√`, `x²`, `π`, `e`) with a dynamic, stateful toggle between **Degrees and Radians**. |
+| 💻 **Programmer** | Real-time base conversions (`DEC`, `HEX`, `OCT`, `BIN`) and live bitwise logic operations (`AND`, `OR`, `XOR`, `<<`, `>>`). |
+| 📐 **Converter** | Instant unit conversions spanning Length, Weight, Temperature, and **Volume**. |
+| 📜 **History** | Persistent calculation history saved securely via local Room (SQLite) database. |
+| ⚙️ **Settings** | Edge-to-edge Material 3 UI, Dark/Light theme switching, and custom Haptic Feedback integration. |
 
 ### 🔒 Privacy First
-- **100% Offline** — No internet required, ever
-- **Zero Tracking** — No analytics, no ads, no data collection
-- **Local Storage** — All data stays on your device
+- **100% Offline** — Zero internet permissions required.
+- **Zero Tracking** — No analytics, no ads, no telemetry.
+- **Local Storage** — Your data never leaves your device.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Tech Stack & Modern Standards
 
-| Category | Technology |
-|----------|-----------|
-| **Language** | Kotlin |
-| **UI Framework** | Jetpack Compose + Material 3 |
-| **Architecture** | MVVM (Model-View-ViewModel) |
-| **Dependency Injection** | Hilt |
-| **Database** | Room (SQLite) |
-| **Preferences** | Jetpack DataStore |
-| **Navigation** | Navigation Compose |
-| **Math Engine** | mXparser |
-| **Build System** | Gradle (KTS) with Version Catalog |
+Mantis strictly follows modern Android development practices:
+
+* **Language:** Kotlin (100%)
+* **UI Framework:** Jetpack Compose with Material 3 (Edge-to-Edge window insets, custom entry/exit animations)
+* **Architecture:** Clean Architecture + MVVM + Unidirectional Data Flow (UDF)
+* **Dependency Injection:** Dagger Hilt
+* **Database & Preferences:** Room Database (History) and Jetpack DataStore (Settings)
+* **Math Engine:** mXparser (for robust string-based expression evaluation)
+* **Navigation:** Jetpack Navigation Compose with custom transitions
 
 ---
 
-## 🏗 Architecture
+## 🏗 Architecture Flow
 
-```
+The project is modularized by feature, ensuring code is scalable, testable, and highly decoupled.
+
+```text
 com.kush.mantis/
-├── core/                          # Shared utilities & data layer
-│   ├── data/                      # Database & DataStore setup
-│   ├── di/                        # Hilt dependency injection modules
-│   ├── ui/components/             # Reusable UI components (CalcButton, DisplayPanel)
-│   └── util/                      # Helper classes (NumberFormatter, HapticHelper)
-│
-├── features/                      # Feature modules (one per calculator mode)
-│   ├── basic/                     # Basic calculator
-│   │   ├── domain/                # Math expression evaluator
-│   │   └── presentation/         # Screen + ViewModel
-│   ├── scientific/                # Scientific calculator
-│   ├── programmer/                # Programmer calculator (base conversions)
-│   ├── converter/                 # Unit converter
-│   ├── history/                   # Calculation history
-│   └── settings/                  # App settings
-│
-├── navigation/                    # Navigation routes & bottom nav bar
-├── ui/theme/                      # Material 3 color scheme & typography
-├── MainActivity.kt                # Single Activity entry point
-└── MantisApp.kt                   # Hilt Application class
+├── core/                          # Shared UI components, DI modules, Data layers
+├── features/                      
+│   ├── basic/                     # UI, ViewModel, and Math Use Cases
+│   ├── scientific/                # Trigonometric engine and state
+│   ├── programmer/                # Base-N conversions & bitwise logic
+│   ├── converter/                 # Real-time unit conversions
+│   ├── history/                   # Room database integration
+│   └── settings/                  # DataStore preferences & Haptics
+├── navigation/                    # Bottom bar & animated route transitions
+└── ui/theme/                      # Material 3 color schemes
 ```
 
-The app follows a **feature-first MVVM** pattern:
-- **Screen** → Displays UI, sends user actions to ViewModel
-- **ViewModel** → Processes logic, updates UI state via `StateFlow`
-- **Domain/UseCase** → Contains business logic (math evaluation, unit conversion)
-- **Data** → Manages persistence (Room for history, DataStore for settings)
+- **Domain Layer:** Business logic (e.g., `EvaluateExpressionUseCase`, `GetHistoryUseCase`) isolates the UI from data sources.
+- **Presentation Layer:** Jetpack Compose observes state emitted via Kotlin `StateFlow` from ViewModels.
+- **Data Layer:** Room DAOs and DataStore manage actual persistence.
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- [Android Studio](https://developer.android.com/studio) (Ladybug or later)
+- [Android Studio](https://developer.android.com/studio) (Koala or later recommended)
 - JDK 17+
-- Android SDK 26+
+- Android SDK 24+ (Target SDK 35)
 
 ### Build & Run
-
 ```bash
 # Clone the repository
 git clone https://github.com/redrighthand2007-hash/mantis-calculator.git
 
-# Open in Android Studio
-# File → Open → Select the project folder
+# Navigate to the directory
+cd mantis-calculator
 
-# Run the app
-# Click the green ▶️ Play button in Android Studio
-# Or from terminal:
-./gradlew installDebug
-```
-
-### Generate APK
-
-```bash
-# Debug APK
+# Build the project (Debug APK)
 ./gradlew assembleDebug
-# Output: app/build/outputs/apk/debug/app-debug.apk
-
-# From Android Studio:
-# Build → Build Bundle(s) / APK(s) → Build APK(s)
 ```
+Alternatively, simply open the project folder in Android Studio and hit the green ▶️ **Run** button.
 
 ---
 
 ## 🤝 Contributing
-
-Contributions are welcome! Please read the [Contributing Guide](CONTRIBUTING.md) for details.
-
----
+Contributions are always welcome. Please see the [Contributing Guide](CONTRIBUTING.md) for details on submitting pull requests.
 
 ## 📄 License
-
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
 ---
