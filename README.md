@@ -73,7 +73,29 @@ Mantis strictly follows modern Android development practices:
 
 ---
 
-### How does it work? (Architecture) Flow
+### How does it work? (Architecture)
+
+`	ext
+             USER
+               │
+               ▼
+      ┌─────────────────┐
+      │  UI (Compose)   │
+      └────────┬────────┘
+               │ (UDF)
+               ▼
+      ┌─────────────────┐
+      │    ViewModel    │
+      └────────┬────────┘
+               │
+       ┌───────┴───────┐
+       ▼               ▼
+ ┌───────────┐   ┌───────────┐
+ │ mXparser  │   │  Room DB  │
+ │ (Math)    │   │ (History) │
+ └───────────┘   └───────────┘
+`
+
 
 The project is modularized by feature, ensuring code is scalable, testable, and highly decoupled.
 
