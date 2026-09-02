@@ -28,7 +28,12 @@
 
 ---
 
-## 🎯 The Problem & Solution
+## ?? Project Overview
+
+### What is it?
+A privacy-first, offline, "all-in-one" Android calculator built for power users.
+
+### Why did you build it?
 
 Most calculator apps today are either too basic, fragmented across multiple apps, or bloated with intrusive ads and unnecessary permissions. 
 
@@ -36,7 +41,7 @@ Most calculator apps today are either too basic, fragmented across multiple apps
 
 ---
 
-## ✨ Features
+### What does it do?
 
 | Mode | Highlights |
 |------|------------|
@@ -54,7 +59,7 @@ Most calculator apps today are either too basic, fragmented across multiple apps
 
 ---
 
-## 🛠️ Tech Stack & Modern Standards
+### Tech stack
 
 Mantis strictly follows modern Android development practices:
 
@@ -68,7 +73,7 @@ Mantis strictly follows modern Android development practices:
 
 ---
 
-## 🏗 Architecture Flow
+### How does it work? (Architecture) Flow
 
 The project is modularized by feature, ensuring code is scalable, testable, and highly decoupled.
 
@@ -127,3 +132,4 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
   <p>Designed & Developed with 💚 by <strong>Kush</strong></p>
   <p><sub>Built with Kotlin, Jetpack Compose & a lot of ☕</sub></p>
 </div>
+
