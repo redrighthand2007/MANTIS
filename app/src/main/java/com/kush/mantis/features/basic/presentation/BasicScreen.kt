@@ -34,6 +34,7 @@ fun BasicScreen(
 
         DisplayPanel(
             expression = expression,
+            onExpressionChange = { viewModel.onEvent(BasicCalcEvent.OnExpressionChange(it)) },
             result = result,
             swapInputOutput = true,
             modifier = Modifier.weight(0.35f)

@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import androidx.compose.ui.text.input.TextFieldValue
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,8 +20,8 @@ class BasicViewModel @Inject constructor(
     private val insertHistoryUseCase: InsertHistoryUseCase
 ) : ViewModel() {
 
-    private val _expression = MutableStateFlow("")
-    val expression: StateFlow<String> = _expression.asStateFlow()
+    private val _expression = MutableStateFlow(TextFieldValue(""))
+    val expression: StateFlow<TextFieldValue> = _expression.asStateFlow()
 
     private val _result = MutableStateFlow("")
     val result: StateFlow<String> = _result.asStateFlow()
@@ -28,45 +29,47 @@ class BasicViewModel @Inject constructor(
     fun onEvent(event: BasicCalcEvent) {
         when (event) {
             is BasicCalcEvent.OnNumberClick -> {
-                _expression.update { it + event.number }
+                _expression.value = com.kush.mantis.core.util.CursorUtil.insertText(_expression.value, event.number)
                 evaluateLive()
             }
             is BasicCalcEvent.OnOperatorClick -> {
-                _expression.update { it + event.operator }
+                _expression.value = com.kush.mantis.core.util.CursorUtil.insertText(_expression.value, event.operator)
             }
             is BasicCalcEvent.OnClearClick -> {
-                _expression.value = ""
+                _expression.value = com.kush.mantis.core.util.CursorUtil.clear()
                 _result.value = ""
             }
             is BasicCalcEvent.OnDeleteClick -> {
-                if (_expression.value.isNotEmpty()) {
-                    _expression.update { it.dropLast(1) }
+                if (_expression.value.text.isNotEmpty()) {
+                    _expression.value = com.kush.mantis.core.util.CursorUtil.deleteText(_expression.value)
                     evaluateLive()
                 }
             }
             is BasicCalcEvent.OnEqualsClick -> {
-                val finalResult = evaluateExpressionUseCase(_expression.value)
+                val finalResult = evaluateExpressionUseCase(_expression.value.text)
                 if (finalResult.isNotEmpty()) {
-                    
                     viewModelScope.launch {
                         insertHistoryUseCase(
                             CalculationHistory(
-                                expression = _expression.value,
+                                expression = _expression.value.text,
                                 result = finalResult,
                                 mode = "Basic"
                             )
                         )
                     }
-
-                    _expression.value = finalResult
+                    _expression.value = TextFieldValue(finalResult, androidx.compose.ui.text.TextRange(finalResult.length))
                     _result.value = ""
                 }
+            }
+            is BasicCalcEvent.OnExpressionChange -> {
+                _expression.value = event.value
+                evaluateLive()
             }
         }
     }
 
     private fun evaluateLive() {
-        val currentResult = evaluateExpressionUseCase(_expression.value)
+        val currentResult = evaluateExpressionUseCase(_expression.value.text)
         if (currentResult != "NaN") {
             _result.value = currentResult
         }
@@ -76,6 +79,7 @@ class BasicViewModel @Inject constructor(
 sealed class BasicCalcEvent {
     data class OnNumberClick(val number: String) : BasicCalcEvent()
     data class OnOperatorClick(val operator: String) : BasicCalcEvent()
+    data class OnExpressionChange(val value: TextFieldValue) : BasicCalcEvent()
     object OnClearClick : BasicCalcEvent()
     object OnDeleteClick : BasicCalcEvent()
     object OnEqualsClick : BasicCalcEvent()

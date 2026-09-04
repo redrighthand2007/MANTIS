@@ -7,13 +7,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.TextRange
 import javax.inject.Inject
+import kotlin.math.max
 
 @HiltViewModel
 class ProgrammerViewModel @Inject constructor() : ViewModel() {
 
-    private val _expression = MutableStateFlow("")
-    val expression: StateFlow<String> = _expression.asStateFlow()
+    private val _expression = MutableStateFlow(TextFieldValue(""))
+    val expression: StateFlow<TextFieldValue> = _expression.asStateFlow()
 
     private val _result = MutableStateFlow("")
     val result: StateFlow<String> = _result.asStateFlow()
@@ -37,9 +40,12 @@ class ProgrammerViewModel @Inject constructor() : ViewModel() {
                 _inputString.value = BaseConverter.convert(_currentValue.value, event.base)
                 // Reset expression to match new base if no pending operator to keep it clean
                 if (pendingOperator == null) {
-                    _expression.value = _inputString.value
+                    _expression.value = TextFieldValue(_inputString.value, TextRange(_inputString.value.length))
                 }
                 evaluateLive()
+            }
+            is ProgrammerEvent.OnExpressionChange -> {
+                _expression.value = event.value
             }
             is ProgrammerEvent.OnInput -> {
                 if (_inputString.value == "0" && event.input != "0") {
@@ -48,10 +54,10 @@ class ProgrammerViewModel @Inject constructor() : ViewModel() {
                     _inputString.update { it + event.input }
                 }
                 
-                if (_expression.value == "0") {
-                    _expression.value = event.input
+                if (_expression.value.text == "0") {
+                    _expression.value = TextFieldValue(event.input, TextRange(event.input.length))
                 } else {
-                    _expression.update { it + event.input }
+                    _expression.value = TextFieldValue(_expression.value.text + event.input, TextRange(_expression.value.text.length + event.input.length))
                 }
                 updateValueFromInput()
             }
@@ -61,15 +67,15 @@ class ProgrammerViewModel @Inject constructor() : ViewModel() {
                 } else {
                     _inputString.value = "0"
                 }
-                if (_expression.value.isNotEmpty()) {
-                    _expression.update { it.dropLast(1) }
+                if (_expression.value.text.isNotEmpty()) {
+                    _expression.value = TextFieldValue(_expression.value.text.dropLast(1), TextRange(max(0, _expression.value.text.length - 1)))
                 }
                 updateValueFromInput()
             }
             is ProgrammerEvent.OnClear -> {
                 _inputString.value = "0"
                 _currentValue.value = 0L
-                _expression.value = ""
+                _expression.value = TextFieldValue("")
                 _result.value = ""
                 previousValue = null
                 pendingOperator = null
@@ -79,12 +85,12 @@ class ProgrammerViewModel @Inject constructor() : ViewModel() {
                     _currentValue.value = _currentValue.value.inv()
                     val res = BaseConverter.convert(_currentValue.value, _activeBase.value)
                     _inputString.value = res
-                    _expression.value = res
+                    _expression.value = TextFieldValue(res, TextRange(res.length))
                 } else {
                     previousValue = _currentValue.value
                     pendingOperator = event.op
                     _inputString.value = "0"
-                    _expression.update { it + " ${event.op} " }
+                    _expression.value = TextFieldValue(_expression.value.text + " ${event.op} ", TextRange(_expression.value.text.length + event.op.length + 2))
                 }
             }
             is ProgrammerEvent.OnEquals -> {
@@ -103,7 +109,7 @@ class ProgrammerViewModel @Inject constructor() : ViewModel() {
                     val resultStr = BaseConverter.convert(computed, _activeBase.value)
                     _inputString.value = resultStr
                     
-                    _expression.value = resultStr
+                    _expression.value = TextFieldValue(resultStr, TextRange(resultStr.length))
                     _result.value = ""
                     
                     previousValue = null
@@ -143,6 +149,7 @@ class ProgrammerViewModel @Inject constructor() : ViewModel() {
 sealed class ProgrammerEvent {
     data class SetBase(val base: Int) : ProgrammerEvent()
     data class OnInput(val input: String) : ProgrammerEvent()
+    data class OnExpressionChange(val value: TextFieldValue) : ProgrammerEvent()
     data class OnBitwiseOp(val op: String) : ProgrammerEvent()
     object OnDelete : ProgrammerEvent()
     object OnClear : ProgrammerEvent()

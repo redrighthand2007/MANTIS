@@ -36,6 +36,7 @@ fun ScientificScreen(
 
         DisplayPanel(
             expression = expression,
+            onExpressionChange = { viewModel.onEvent(ScientificEvent.OnExpressionChange(it)) },
             result = result,
             modifier = Modifier.weight(0.35f)
         )
