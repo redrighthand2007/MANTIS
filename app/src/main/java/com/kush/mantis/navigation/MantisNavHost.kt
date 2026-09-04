@@ -18,6 +18,15 @@ import com.kush.mantis.features.settings.presentation.SettingsScreen
 fun MantisNavHost(isHapticEnabled: Boolean = true) {
     val navController = rememberNavController()
 
+    val routeOrder = listOf(
+        BasicRoute::class.qualifiedName,
+        ScientificRoute::class.qualifiedName,
+        ProgrammerRoute::class.qualifiedName,
+        ConverterRoute::class.qualifiedName,
+        HistoryRoute::class.qualifiedName,
+        SettingsRoute::class.qualifiedName
+    )
+
     Scaffold(
         bottomBar = { BottomNavBar(navController, isHapticEnabled) }
     ) { innerPadding ->
@@ -25,8 +34,24 @@ fun MantisNavHost(isHapticEnabled: Boolean = true) {
             navController = navController,
             startDestination = BasicRoute,
             modifier = Modifier.padding(innerPadding),
-            enterTransition = { androidx.compose.animation.slideInHorizontally(initialOffsetX = { it }, animationSpec = androidx.compose.animation.core.tween(300)) },
-            exitTransition = { androidx.compose.animation.slideOutHorizontally(targetOffsetX = { -it }, animationSpec = androidx.compose.animation.core.tween(300)) },
+            enterTransition = {
+                val initialIndex = routeOrder.indexOf(initialState.destination.route?.substringBefore("?"))
+                val targetIndex = routeOrder.indexOf(targetState.destination.route?.substringBefore("?"))
+                val isLeftToRight = targetIndex > initialIndex
+                androidx.compose.animation.slideInHorizontally(
+                    initialOffsetX = { if (isLeftToRight) it else -it },
+                    animationSpec = androidx.compose.animation.core.tween(300)
+                )
+            },
+            exitTransition = {
+                val initialIndex = routeOrder.indexOf(initialState.destination.route?.substringBefore("?"))
+                val targetIndex = routeOrder.indexOf(targetState.destination.route?.substringBefore("?"))
+                val isLeftToRight = targetIndex > initialIndex
+                androidx.compose.animation.slideOutHorizontally(
+                    targetOffsetX = { if (isLeftToRight) -it else it },
+                    animationSpec = androidx.compose.animation.core.tween(300)
+                )
+            },
             popEnterTransition = { androidx.compose.animation.slideInHorizontally(initialOffsetX = { -it }, animationSpec = androidx.compose.animation.core.tween(300)) },
             popExitTransition = { androidx.compose.animation.slideOutHorizontally(targetOffsetX = { it }, animationSpec = androidx.compose.animation.core.tween(300)) }
         ) {

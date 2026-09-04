@@ -50,7 +50,7 @@ fun ConverterScreen(
                         color = MantisGreen,
                         modifier = Modifier.clickable { categoryExpanded = true }.padding(8.dp)
                     )
-                    DropdownMenu(expanded = categoryExpanded, onDismissRequest = { categoryExpanded = false }) {
+                    DropdownMenu(expanded = categoryExpanded, onDismissRequest = { categoryExpanded = false }, modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)) {
                         UnitDefinitions.Categories.keys.forEach { cat ->
                             DropdownMenuItem(
                                 text = { Text(cat) },
@@ -87,7 +87,7 @@ fun ConverterScreen(
                             color = MantisGreen,
                             modifier = Modifier.clickable { fromExpanded = true }.padding(vertical = 4.dp)
                         )
-                        DropdownMenu(expanded = fromExpanded, onDismissRequest = { fromExpanded = false }) {
+                        DropdownMenu(expanded = fromExpanded, onDismissRequest = { fromExpanded = false }, modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)) {
                             units.forEach { u ->
                                 DropdownMenuItem(text = { Text(u.name) }, onClick = { viewModel.onEvent(ConverterEvent.SetFromUnit(u)); fromExpanded = false })
                             }
@@ -122,7 +122,7 @@ fun ConverterScreen(
                             color = MantisGreen,
                             modifier = Modifier.clickable { toExpanded = true }.padding(vertical = 4.dp)
                         )
-                        DropdownMenu(expanded = toExpanded, onDismissRequest = { toExpanded = false }) {
+                        DropdownMenu(expanded = toExpanded, onDismissRequest = { toExpanded = false }, modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)) {
                             units.forEach { u ->
                                 DropdownMenuItem(text = { Text(u.name) }, onClick = { viewModel.onEvent(ConverterEvent.SetToUnit(u)); toExpanded = false })
                             }

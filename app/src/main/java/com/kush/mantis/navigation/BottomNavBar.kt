@@ -32,6 +32,7 @@ fun BottomNavBar(navController: NavController, isHapticEnabled: Boolean = true) 
     )
 
     val haptic = LocalHapticFeedback.current
+    val view = androidx.compose.ui.platform.LocalView.current
 
     NavigationBar(
         containerColor = androidx.compose.material3.MaterialTheme.colorScheme.background,
@@ -48,7 +49,7 @@ fun BottomNavBar(navController: NavController, isHapticEnabled: Boolean = true) 
                 selected = selected,
                 onClick = {
                     if (isHapticEnabled && !selected) {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        view.performHapticFeedback(android.view.HapticFeedbackConstants.KEYBOARD_TAP)
                     }
                     navController.navigate(routeObj) {
                         popUpTo(BasicRoute) { saveState = true }

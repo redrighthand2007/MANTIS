@@ -51,23 +51,24 @@ fun SettingsScreen(
                         .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Box(
+                    androidx.compose.foundation.Image(
+                        painter = androidx.compose.ui.res.painterResource(id = com.kush.mantis.R.drawable.ic_launcher_foreground),
+                        contentDescription = "Mantis Logo",
                         modifier = Modifier
                             .weight(0.25f)
                             .aspectRatio(1f)
                             .clip(CircleShape)
-                            .background(MantisGreen),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(Icons.Filled.Person, contentDescription = "Profile", tint = androidx.compose.ui.graphics.Color.Black, modifier = Modifier.size(40.dp))
-                    }
+                            .background(MantisGreen)
+                            .padding(4.dp)
+                    )
                     Spacer(modifier = Modifier.width(16.dp))
-                    Column(
+                    Text(
+                        text = "Menatallist",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.weight(0.75f)
-                    ) {
-                        Text(text = "Kush", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-                        Text(text = "Developer", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
-                    }
+                    )
                 }
             }
 

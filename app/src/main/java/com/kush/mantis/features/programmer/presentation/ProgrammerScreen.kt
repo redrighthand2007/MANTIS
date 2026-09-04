@@ -49,7 +49,7 @@ fun ProgrammerScreen(
                         color = MantisGreen,
                         modifier = Modifier.clickable { baseExpanded = true }.padding(8.dp)
                     )
-                    DropdownMenu(expanded = baseExpanded, onDismissRequest = { baseExpanded = false }) {
+                    DropdownMenu(expanded = baseExpanded, onDismissRequest = { baseExpanded = false }, modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)) {
                         DropdownMenuItem(text = { Text("HEX (16)") }, onClick = { viewModel.onEvent(ProgrammerEvent.SetBase(16)); baseExpanded = false })
                         DropdownMenuItem(text = { Text("DEC (10)") }, onClick = { viewModel.onEvent(ProgrammerEvent.SetBase(10)); baseExpanded = false })
                         DropdownMenuItem(text = { Text("OCT (8)") }, onClick = { viewModel.onEvent(ProgrammerEvent.SetBase(8)); baseExpanded = false })
