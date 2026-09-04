@@ -46,7 +46,7 @@ class BasicViewModel @Inject constructor(
             }
             is BasicCalcEvent.OnEqualsClick -> {
                 val finalResult = evaluateExpressionUseCase(_expression.value)
-                if (finalResult != "Error" && finalResult.isNotEmpty()) {
+                if (finalResult.isNotEmpty()) {
                     
                     viewModelScope.launch {
                         insertHistoryUseCase(
@@ -67,7 +67,7 @@ class BasicViewModel @Inject constructor(
 
     private fun evaluateLive() {
         val currentResult = evaluateExpressionUseCase(_expression.value)
-        if (currentResult != "Error") {
+        if (currentResult != "NaN") {
             _result.value = currentResult
         }
     }

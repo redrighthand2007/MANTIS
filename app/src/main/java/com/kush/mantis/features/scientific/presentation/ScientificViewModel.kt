@@ -51,7 +51,7 @@ class ScientificViewModel @Inject constructor(
             }
             is ScientificEvent.OnEquals -> {
                 val finalResult = evaluateExpressionUseCase(_expression.value, _isDegreeMode.value)
-                if (finalResult != "Error" && finalResult.isNotEmpty()) {
+                if (finalResult.isNotEmpty()) {
                     viewModelScope.launch {
                         insertHistoryUseCase(
                             CalculationHistory(
@@ -77,7 +77,7 @@ class ScientificViewModel @Inject constructor(
 
     private fun evaluateLive() {
         val currentResult = evaluateExpressionUseCase(_expression.value, _isDegreeMode.value)
-        if (currentResult != "Error") {
+        if (currentResult != "NaN") {
             _result.value = currentResult
         }
     }

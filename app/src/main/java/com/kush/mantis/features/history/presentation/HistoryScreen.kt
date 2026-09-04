@@ -29,7 +29,18 @@ fun HistoryScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        TopHeader(title = "History")
+        TopHeader(
+            title = "History",
+            trailingContent = {
+                IconButton(onClick = { viewModel.clearHistory() }) {
+                    Icon(
+                        imageVector = androidx.compose.material.icons.Icons.Filled.Delete,
+                        contentDescription = "Clear History",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        )
 
         if (historyList.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

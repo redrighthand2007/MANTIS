@@ -23,7 +23,7 @@ class EvaluateExpressionUseCase @Inject constructor() {
         val result = e.calculate()
         
         return if (result.isNaN()) {
-            "Error"
+            "NaN"
         } else {
             NumberFormatter.formatResult(result)
         }
