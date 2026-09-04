@@ -3,6 +3,7 @@ package com.kush.mantis.features.settings.presentation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.border
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -58,8 +59,9 @@ fun SettingsScreen(
                             .weight(0.25f)
                             .aspectRatio(1f)
                             .clip(CircleShape)
-                            .background(MantisGreen)
-                            .padding(4.dp)
+                            .border(1.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .padding(8.dp)
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(
