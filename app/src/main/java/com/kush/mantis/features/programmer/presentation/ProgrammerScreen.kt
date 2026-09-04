@@ -61,6 +61,7 @@ fun ProgrammerScreen(
 
         DisplayPanel(
             expression = expression,
+            onExpressionChange = { viewModel.onEvent(ProgrammerEvent.OnExpressionChange(it)) },
             result = result,
             modifier = Modifier.weight(0.35f)
         )
