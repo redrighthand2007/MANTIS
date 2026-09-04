@@ -52,8 +52,24 @@ fun MantisNavHost(isHapticEnabled: Boolean = true) {
                     animationSpec = androidx.compose.animation.core.tween(300)
                 )
             },
-            popEnterTransition = { androidx.compose.animation.slideInHorizontally(initialOffsetX = { -it }, animationSpec = androidx.compose.animation.core.tween(300)) },
-            popExitTransition = { androidx.compose.animation.slideOutHorizontally(targetOffsetX = { it }, animationSpec = androidx.compose.animation.core.tween(300)) }
+            popEnterTransition = {
+                val initialIndex = routeOrder.indexOf(initialState.destination.route?.substringBefore("?"))
+                val targetIndex = routeOrder.indexOf(targetState.destination.route?.substringBefore("?"))
+                val isLeftToRight = targetIndex > initialIndex
+                androidx.compose.animation.slideInHorizontally(
+                    initialOffsetX = { if (isLeftToRight) it else -it },
+                    animationSpec = androidx.compose.animation.core.tween(300)
+                )
+            },
+            popExitTransition = {
+                val initialIndex = routeOrder.indexOf(initialState.destination.route?.substringBefore("?"))
+                val targetIndex = routeOrder.indexOf(targetState.destination.route?.substringBefore("?"))
+                val isLeftToRight = targetIndex > initialIndex
+                androidx.compose.animation.slideOutHorizontally(
+                    targetOffsetX = { if (isLeftToRight) -it else it },
+                    animationSpec = androidx.compose.animation.core.tween(300)
+                )
+            }
         ) {
             composable<BasicRoute> { BasicScreen() }
             composable<ScientificRoute> { ScientificScreen() }
