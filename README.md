@@ -1,11 +1,7 @@
-<div align="center">
-  <img src="assets/banner.jpg" alt="Mantis Calculator Banner" width="100%" style="border-radius: 12px;"/>
-  
-  <br/><br/>
+﻿<div align="center">
+  <img src="design/logo/wings_playstore_512.png" alt="Mantis Calculator" width="120" style="border-radius: 24px; box-shadow: 0 4px 14px rgba(0,0,0,0.1);"/>
 
-  <img src="assets/icon.jpg" alt="Mantis Calculator" width="120" style="border-radius: 24px; box-shadow: 0 4px 14px rgba(0,0,0,0.1);"/>
-
-  <h1>📱 Mantis Calculator</h1>
+  <h1>Mantis Calculator</h1>
   
   <p><strong>A privacy-first, offline, "all-in-one" Android calculator built for power users.</strong></p>
 
@@ -15,14 +11,6 @@
     <a href="https://developer.android.com/jetpack/compose"><img src="https://img.shields.io/badge/Compose-Material_3-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white" alt="Compose"/></a>
     <img src="https://img.shields.io/badge/Min_SDK-24-brightgreen?style=for-the-badge" alt="Min SDK"/>
     <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License"/>
-  </p>
-
-  <p>
-    <a href="#-features">Features</a> •
-    <a href="#️-tech-stack">Tech Stack</a> •
-    <a href="#-architecture">Architecture</a> •
-    <a href="#-getting-started">Getting Started</a> •
-    <a href="#-license">License</a>
   </p>
 </div>
 
@@ -34,32 +22,31 @@
 A privacy-first, offline, "all-in-one" Android calculator built for power users.
 
 ### Why did you build it?
-
 Most calculator apps today are either too basic, fragmented across multiple apps, or bloated with intrusive ads and unnecessary permissions. 
 
 **Mantis** solves this by unifying four professional-grade calculation engines into a single, beautiful, lightning-fast application. It is completely offline, ad-free, and designed with strict separation of concerns using Clean Architecture.
 
 ---
 
-### What does it do?
+## ✨ Features
 
 | Mode | Highlights |
 |------|------------|
-| 🧮 **Basic** | Standard arithmetic for everyday use, with parentheses support and precise large-number formatting. |
-| 🔬 **Scientific** | Advanced math (`sin`, `cos`, `tan`, `log`, `ln`, `√`, `x²`, `π`, `e`) with a dynamic, stateful toggle between **Degrees and Radians**. |
-| 💻 **Programmer** | Real-time base conversions (`DEC`, `HEX`, `OCT`, `BIN`) and live bitwise logic operations (`AND`, `OR`, `XOR`, `<<`, `>>`). |
-| 📐 **Converter** | Instant unit conversions spanning Length, Weight, Temperature, and **Volume**. |
+| 🔢 **Basic** | Standard arithmetic for everyday use, with parentheses support and precise large-number formatting. |
+| 📐 **Scientific** | Advanced math (sin, cos, 	an, log, ln, x^y, x², √, e) with a dynamic, stateful toggle between **Degrees and Radians**. |
+| 💻 **Programmer** | Real-time base conversions (DEC, HEX, OCT, BIN) and live bitwise logic operations (AND, OR, XOR, <<, >>). |
+| ⚖️ **Converter** | Instant unit conversions spanning Length, Weight, Temperature, and **Volume**. |
 | 📜 **History** | Persistent calculation history saved securely via local Room (SQLite) database. |
 | ⚙️ **Settings** | Edge-to-edge Material 3 UI, Dark/Light theme switching, and custom Haptic Feedback integration. |
 
-### 🔒 Privacy First
+### 🛡️ Privacy First
 - **100% Offline** — Zero internet permissions required.
 - **Zero Tracking** — No analytics, no ads, no telemetry.
 - **Local Storage** — Your data never leaves your device.
 
 ---
 
-### Tech stack
+## 🛠️ Tech Stack
 
 Mantis strictly follows modern Android development practices:
 
@@ -73,33 +60,32 @@ Mantis strictly follows modern Android development practices:
 
 ---
 
-### How does it work? (Architecture)
+## 🏗️ Architecture
 
 `	ext
              USER
                │
                ▼
-      ┌─────────────────┐
-      │  UI (Compose)   │
-      └────────┬────────┘
-               │ (UDF)
-               ▼
-      ┌─────────────────┐
-      │    ViewModel    │
-      └────────┬────────┘
-               │
-       ┌───────┴───────┐
-       ▼               ▼
- ┌───────────┐   ┌───────────┐
- │ mXparser  │   │  Room DB  │
- │ (Math)    │   │ (History) │
- └───────────┘   └───────────┘
+      ┌─────────────────────────────┐
+      │  UI (Jetpack Compose)       │
+      └────────────┬────────────────┘
+                   │ (UDF / StateFlow)
+                   ▼
+      ┌─────────────────────────────┐
+      │         ViewModel           │
+      └────────────┬────────────────┘
+                   │
+       ┌───────────┴───────────┐
+       ▼                       ▼
+ ┌─────────────┐         ┌─────────────┐
+ │ mXparser    │         │ Room DB     │
+ │ (Math)      │         │ (History)   │
+ └─────────────┘         └─────────────┘
 `
-
 
 The project is modularized by feature, ensuring code is scalable, testable, and highly decoupled.
 
-```text
+`	ext
 com.kush.mantis/
 ├── core/                          # Shared UI components, DI modules, Data layers
 ├── features/                      
@@ -107,14 +93,14 @@ com.kush.mantis/
 │   ├── scientific/                # Trigonometric engine and state
 │   ├── programmer/                # Base-N conversions & bitwise logic
 │   ├── converter/                 # Real-time unit conversions
-│   ├── history/                   # Room database integration
+│   └── history/                   # Room database integration
 │   └── settings/                  # DataStore preferences & Haptics
 ├── navigation/                    # Bottom bar & animated route transitions
 └── ui/theme/                      # Material 3 color schemes
-```
+`
 
-- **Domain Layer:** Business logic (e.g., `EvaluateExpressionUseCase`, `GetHistoryUseCase`) isolates the UI from data sources.
-- **Presentation Layer:** Jetpack Compose observes state emitted via Kotlin `StateFlow` from ViewModels.
+- **Domain Layer:** Business logic (e.g., EvaluateExpressionUseCase, GetHistoryUseCase) isolates the UI from data sources.
+- **Presentation Layer:** Jetpack Compose observes state emitted via Kotlin StateFlow from ViewModels.
 - **Data Layer:** Room DAOs and DataStore manage actual persistence.
 
 ---
@@ -127,7 +113,7 @@ com.kush.mantis/
 - Android SDK 24+ (Target SDK 35)
 
 ### Build & Run
-```bash
+`ash
 # Clone the repository
 git clone https://github.com/redrighthand2007-hash/mantis-calculator.git
 
@@ -136,7 +122,7 @@ cd mantis-calculator
 
 # Build the project (Debug APK)
 ./gradlew assembleDebug
-```
+`
 Alternatively, simply open the project folder in Android Studio and hit the green ▶️ **Run** button.
 
 ---
@@ -151,7 +137,6 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 <div align="center">
   <br/>
-  <p>Designed & Developed with 💚 by <strong>Kush</strong></p>
+  <p>Designed & Developed with ❤️ by <strong>Kush</strong></p>
   <p><sub>Built with Kotlin, Jetpack Compose & a lot of ☕</sub></p>
 </div>
-
