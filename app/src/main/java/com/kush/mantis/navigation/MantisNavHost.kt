@@ -25,8 +25,10 @@ fun MantisNavHost(isHapticEnabled: Boolean = true) {
             navController = navController,
             startDestination = BasicRoute,
             modifier = Modifier.padding(innerPadding),
-            enterTransition = { androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(300)) },
-            exitTransition = { androidx.compose.animation.fadeOut(animationSpec = androidx.compose.animation.core.tween(300)) }
+            enterTransition = { androidx.compose.animation.slideInHorizontally(initialOffsetX = { it }, animationSpec = androidx.compose.animation.core.tween(300)) },
+            exitTransition = { androidx.compose.animation.slideOutHorizontally(targetOffsetX = { -it }, animationSpec = androidx.compose.animation.core.tween(300)) },
+            popEnterTransition = { androidx.compose.animation.slideInHorizontally(initialOffsetX = { -it }, animationSpec = androidx.compose.animation.core.tween(300)) },
+            popExitTransition = { androidx.compose.animation.slideOutHorizontally(targetOffsetX = { it }, animationSpec = androidx.compose.animation.core.tween(300)) }
         ) {
             composable<BasicRoute> { BasicScreen() }
             composable<ScientificRoute> { ScientificScreen() }

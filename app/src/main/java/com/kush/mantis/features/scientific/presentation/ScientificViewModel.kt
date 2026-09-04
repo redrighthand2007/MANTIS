@@ -52,16 +52,17 @@ class ScientificViewModel @Inject constructor(
             is ScientificEvent.OnEquals -> {
                 val finalResult = evaluateExpressionUseCase(_expression.value, _isDegreeMode.value)
                 if (finalResult != "Error" && finalResult.isNotEmpty()) {
-                    _result.value = finalResult
                     viewModelScope.launch {
                         insertHistoryUseCase(
                             CalculationHistory(
                                 expression = _expression.value,
                                 result = finalResult,
-                                timestamp = System.currentTimeMillis()
+                                mode = "Scientific"
                             )
                         )
                     }
+                    _expression.value = finalResult
+                    _result.value = ""
                 }
             }
             is ScientificEvent.ToggleSecondMode -> {

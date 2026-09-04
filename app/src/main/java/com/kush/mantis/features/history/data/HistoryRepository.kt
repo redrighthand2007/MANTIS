@@ -15,4 +15,8 @@ class HistoryRepository @Inject constructor(
     suspend fun clearHistory() {
         dao.clearHistory()
     }
+
+    suspend fun deleteHistoryOlderThan(cutoff: Long) {
+        dao.deleteHistoryOlderThan(cutoff)
+    }
 }

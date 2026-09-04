@@ -24,7 +24,9 @@ object AppModule {
             app,
             MantisDatabase::class.java,
             "mantis_db"
-        ).build()
+        )
+        .fallbackToDestructiveMigration()
+        .build()
     }
 
     @Provides

@@ -3,20 +3,19 @@ package com.kush.mantis.features.programmer.presentation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kush.mantis.core.ui.components.CalcButton
-import com.kush.mantis.features.programmer.domain.BaseConverter
+import com.kush.mantis.core.ui.components.TopHeader
+import com.kush.mantis.core.ui.components.DisplayPanel
 import com.kush.mantis.ui.theme.AccentOrange
 import com.kush.mantis.ui.theme.AccentRed
 import com.kush.mantis.ui.theme.MantisGreen
@@ -29,24 +28,42 @@ fun ProgrammerScreen(
     val activeBase by viewModel.activeBase.collectAsState()
     val inputString by viewModel.inputString.collectAsState()
 
+    val expression by viewModel.expression.collectAsState()
+    val result by viewModel.result.collectAsState()
+
+    var baseExpanded by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Display Area (Bases)
-        Column(
-            modifier = Modifier
-                .weight(0.35f)
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            BaseRow("DEC", 10, activeBase, BaseConverter.convert(currentValue, 10)) { viewModel.onEvent(ProgrammerEvent.SetBase(10)) }
-            BaseRow("HEX", 16, activeBase, BaseConverter.convert(currentValue, 16)) { viewModel.onEvent(ProgrammerEvent.SetBase(16)) }
-            BaseRow("OCT", 8, activeBase, BaseConverter.convert(currentValue, 8)) { viewModel.onEvent(ProgrammerEvent.SetBase(8)) }
-            BaseRow("BIN", 2, activeBase, BaseConverter.convert(currentValue, 2)) { viewModel.onEvent(ProgrammerEvent.SetBase(2)) }
-        }
+        TopHeader(
+            title = "Programmer",
+            trailingContent = {
+                Box {
+                    Text(
+                        text = "Base $activeBase ▼",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MantisGreen,
+                        modifier = Modifier.clickable { baseExpanded = true }.padding(8.dp)
+                    )
+                    DropdownMenu(expanded = baseExpanded, onDismissRequest = { baseExpanded = false }) {
+                        DropdownMenuItem(text = { Text("HEX (16)") }, onClick = { viewModel.onEvent(ProgrammerEvent.SetBase(16)); baseExpanded = false })
+                        DropdownMenuItem(text = { Text("DEC (10)") }, onClick = { viewModel.onEvent(ProgrammerEvent.SetBase(10)); baseExpanded = false })
+                        DropdownMenuItem(text = { Text("OCT (8)") }, onClick = { viewModel.onEvent(ProgrammerEvent.SetBase(8)); baseExpanded = false })
+                        DropdownMenuItem(text = { Text("BIN (2)") }, onClick = { viewModel.onEvent(ProgrammerEvent.SetBase(2)); baseExpanded = false })
+                    }
+                }
+            }
+        )
+
+        DisplayPanel(
+            expression = expression,
+            result = result,
+            modifier = Modifier.weight(0.35f)
+        )
 
         // Keypad
         Column(
@@ -99,29 +116,5 @@ fun ProgrammerScreen(
                 CalcButton("=", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ProgrammerEvent.OnEquals) }
             }
         }
-    }
-}
-
-@Composable
-fun BaseRow(label: String, base: Int, activeBase: Int, value: String, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = if (activeBase == base) MantisGreen else MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Text(
-            text = value,
-            fontSize = 18.sp,
-            color = if (activeBase == base) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
-        )
     }
 }

@@ -5,6 +5,19 @@ import javax.inject.Inject
 
 class ConvertUnitUseCase @Inject constructor() {
     operator fun invoke(valueStr: String, category: String, fromUnit: UnitDefinition, toUnit: UnitDefinition): String {
+        if (valueStr.isEmpty()) return ""
+
+        if (category == "Base") {
+            return try {
+                val baseFrom = fromUnit.toBase.toInt()
+                val baseTo = toUnit.toBase.toInt()
+                val decimalValue = valueStr.toLong(baseFrom)
+                decimalValue.toString(baseTo).uppercase()
+            } catch (e: Exception) {
+                "Error"
+            }
+        }
+
         val value = valueStr.toDoubleOrNull() ?: return ""
         
         if (category == "Temperature") {

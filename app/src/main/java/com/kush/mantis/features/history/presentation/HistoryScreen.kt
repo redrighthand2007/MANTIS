@@ -1,7 +1,6 @@
 package com.kush.mantis.features.history.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,10 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kush.mantis.features.history.data.CalculationHistory
-import com.kush.mantis.ui.theme.AccentRed
 import com.kush.mantis.ui.theme.MantisGreen
-import java.text.SimpleDateFormat
-import java.util.*
+import com.kush.mantis.core.ui.components.TopHeader
 
 @Composable
 fun HistoryScreen(
@@ -32,7 +29,7 @@ fun HistoryScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // No header as requested
+        TopHeader(title = "History")
 
         if (historyList.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -42,8 +39,7 @@ fun HistoryScreen(
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(16.dp),
-                reverseLayout = true,
-                verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Bottom)
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(historyList) { item ->
                     HistoryItemCard(item)
@@ -55,8 +51,8 @@ fun HistoryScreen(
 
 @Composable
 fun HistoryItemCard(item: CalculationHistory) {
-    val sdf = SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault())
-    val dateStr = sdf.format(Date(item.timestamp))
+    val sdf = java.text.SimpleDateFormat("dd/MM", java.util.Locale.getDefault())
+    val dateStr = sdf.format(java.util.Date(item.timestamp))
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -68,7 +64,12 @@ fun HistoryItemCard(item: CalculationHistory) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.End
         ) {
-            Text(text = dateStr, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.fillMaxWidth())
+            Text(
+                text = "${item.mode} • $dateStr", 
+                fontSize = 12.sp, 
+                color = MaterialTheme.colorScheme.onSurfaceVariant, 
+                modifier = Modifier.fillMaxWidth()
+            )
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = item.expression, fontSize = 20.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Text(text = "= ${item.result}", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = MantisGreen)

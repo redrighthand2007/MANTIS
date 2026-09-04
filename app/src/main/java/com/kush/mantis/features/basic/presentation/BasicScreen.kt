@@ -16,6 +16,8 @@ import com.kush.mantis.ui.theme.AccentOrange
 import com.kush.mantis.ui.theme.AccentRed
 import com.kush.mantis.ui.theme.MantisGreen
 
+import com.kush.mantis.core.ui.components.TopHeader
+
 @Composable
 fun BasicScreen(
     viewModel: BasicViewModel = hiltViewModel()
@@ -28,9 +30,12 @@ fun BasicScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
+        TopHeader(title = "Basic")
+
         DisplayPanel(
             expression = expression,
             result = result,
+            swapInputOutput = true,
             modifier = Modifier.weight(0.35f)
         )
 

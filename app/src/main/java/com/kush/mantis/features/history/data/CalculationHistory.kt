@@ -9,5 +9,6 @@ data class CalculationHistory(
     val id: Int = 0,
     val expression: String,
     val result: String,
-    val timestamp: Long
+    val mode: String,
+    val timestamp: Long = System.currentTimeMillis()
 )

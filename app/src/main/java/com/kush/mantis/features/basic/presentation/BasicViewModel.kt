@@ -47,17 +47,19 @@ class BasicViewModel @Inject constructor(
             is BasicCalcEvent.OnEqualsClick -> {
                 val finalResult = evaluateExpressionUseCase(_expression.value)
                 if (finalResult != "Error" && finalResult.isNotEmpty()) {
-                    _result.value = finalResult
                     
                     viewModelScope.launch {
                         insertHistoryUseCase(
                             CalculationHistory(
                                 expression = _expression.value,
                                 result = finalResult,
-                                timestamp = System.currentTimeMillis()
+                                mode = "Basic"
                             )
                         )
                     }
+
+                    _expression.value = finalResult
+                    _result.value = ""
                 }
             }
         }

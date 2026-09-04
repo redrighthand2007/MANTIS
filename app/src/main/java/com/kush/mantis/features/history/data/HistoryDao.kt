@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HistoryDao {
-    @Query("SELECT * FROM history_table ORDER BY timestamp DESC")
+    @Query("SELECT * FROM history_table ORDER BY id DESC")
     fun getAllHistory(): Flow<List<CalculationHistory>>
 
     @Insert
@@ -15,4 +15,7 @@ interface HistoryDao {
 
     @Query("DELETE FROM history_table")
     suspend fun clearHistory()
+
+    @Query("DELETE FROM history_table WHERE timestamp < :cutoff")
+    suspend fun deleteHistoryOlderThan(cutoff: Long)
 }

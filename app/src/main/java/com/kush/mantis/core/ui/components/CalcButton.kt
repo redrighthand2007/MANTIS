@@ -29,7 +29,6 @@ fun CalcButton(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.surfaceVariant,
     textColor: Color = MaterialTheme.colorScheme.onSurface,
-    hapticsEnabled: Boolean = true,
     onClick: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -46,7 +45,6 @@ fun CalcButton(
                 interactionSource = interactionSource,
                 indication = null
             ) {
-                HapticHelper.performHapticFeedback(view, hapticsEnabled)
                 onClick()
             },
         shape = RoundedCornerShape(12.dp),

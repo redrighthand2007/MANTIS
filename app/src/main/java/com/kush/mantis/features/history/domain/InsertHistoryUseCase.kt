@@ -9,5 +9,10 @@ class InsertHistoryUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(history: CalculationHistory) {
         repository.insertHistory(history)
+        
+        // Clean up history older than 2 weeks (14 days)
+        val twoWeeksInMillis = 14L * 24 * 60 * 60 * 1000
+        val cutoff = System.currentTimeMillis() - twoWeeksInMillis
+        repository.deleteHistoryOlderThan(cutoff)
     }
 }

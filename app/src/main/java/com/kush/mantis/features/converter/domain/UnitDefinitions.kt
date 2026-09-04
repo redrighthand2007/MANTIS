@@ -25,9 +25,17 @@ object UnitDefinitions {
         UnitDefinition("Kelvin", "K", 0.0)
     )
 
+    val Base = listOf(
+        UnitDefinition("Decimal", "DEC", 10.0),
+        UnitDefinition("Hexadecimal", "HEX", 16.0),
+        UnitDefinition("Binary", "BIN", 2.0),
+        UnitDefinition("Octal", "OCT", 8.0)
+    )
+
     val Categories = mapOf(
         "Length" to Length,
         "Weight" to Weight,
-        "Temperature" to Temperature
+        "Temperature" to Temperature,
+        "Base" to Base
     )
 }

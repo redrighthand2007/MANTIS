@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <!-- Splash screen background -->
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <!-- Splash screen animated icon -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <!-- Post-splash screen theme -->
+        <item name="postSplashScreenTheme">@style/Theme.Mantis</item>
+    </style>
 
     <style name="Theme.Mantis" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>

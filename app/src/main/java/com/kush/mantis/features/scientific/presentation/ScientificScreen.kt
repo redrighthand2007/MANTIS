@@ -16,6 +16,8 @@ import com.kush.mantis.ui.theme.AccentOrange
 import com.kush.mantis.ui.theme.AccentRed
 import com.kush.mantis.ui.theme.MantisGreen
 
+import com.kush.mantis.core.ui.components.TopHeader
+
 @Composable
 fun ScientificScreen(
     viewModel: ScientificViewModel = hiltViewModel()
@@ -30,6 +32,8 @@ fun ScientificScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
+        TopHeader(title = "Scientific")
+
         DisplayPanel(
             expression = expression,
             result = result,

@@ -33,14 +33,8 @@ class MainActivity : ComponentActivity() {
         
 
         setContent {
-            val themeMode by settingsUseCases.themeModeFlow.collectAsState(initial = "System")
             val isHapticEnabled by settingsUseCases.hapticFeedbackFlow.collectAsState(initial = true)
-            
-            val isDarkTheme = when (themeMode) {
-                "Dark" -> true
-                "Light" -> false
-                else -> isSystemInDarkTheme()
-            }
+            val isDarkTheme = isSystemInDarkTheme()
 
             MantisTheme(darkTheme = isDarkTheme) {
                 Surface(

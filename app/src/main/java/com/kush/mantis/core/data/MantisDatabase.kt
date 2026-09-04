@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.kush.mantis.features.history.data.CalculationHistory
 import com.kush.mantis.features.history.data.HistoryDao
 
-@Database(entities = [CalculationHistory::class], version = 1, exportSchema = false)
+@Database(entities = [CalculationHistory::class], version = 3, exportSchema = false)
 abstract class MantisDatabase : RoomDatabase() {
     abstract fun historyDao(): HistoryDao
 }
