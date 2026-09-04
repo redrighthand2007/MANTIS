@@ -28,7 +28,7 @@
 
 ---
 
-## ?? Project Overview
+## 📖 Project Overview
 
 ### What is it?
 A privacy-first, offline, "all-in-one" Android calculator built for power users.
