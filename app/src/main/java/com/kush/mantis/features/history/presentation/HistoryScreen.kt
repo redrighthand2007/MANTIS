@@ -17,6 +17,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.kush.mantis.features.history.data.CalculationHistory
 import com.kush.mantis.ui.theme.MantisGreen
 import com.kush.mantis.core.ui.components.TopHeader
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 
 @Composable
 fun HistoryScreen(
@@ -34,7 +36,7 @@ fun HistoryScreen(
             trailingContent = {
                 IconButton(onClick = { viewModel.clearHistory() }) {
                     Icon(
-                        imageVector = androidx.compose.material.icons.Icons.Filled.Delete,
+                        imageVector = Icons.Filled.Delete,
                         contentDescription = "Clear History",
                         tint = MaterialTheme.colorScheme.primary
                     )
