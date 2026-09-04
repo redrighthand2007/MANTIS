@@ -105,5 +105,4 @@ com.kush.mantis/
 <div align="center">
   <br/>
   <p>Designed & Developed with ❤️ by <strong>Kush</strong></p>
-  <p><sub>Built with Kotlin, Jetpack Compose & a lot of ☕</sub></p>
 </div>
