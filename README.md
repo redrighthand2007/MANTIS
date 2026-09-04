@@ -3,14 +3,13 @@
 
   <h1>Mantis Calculator</h1>
   
-  <p><strong>A privacy-first, offline, "all-in-one" Android calculator built for power users.</strong></p>
+  <p><strong>An "all-in-one" Android calculator built for power users.</strong></p>
 
   <p>
     <a href="https://android.com"><img src="https://img.shields.io/badge/Platform-Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Platform"/></a>
     <a href="https://kotlinlang.org"><img src="https://img.shields.io/badge/Kotlin-100%25-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" alt="Kotlin"/></a>
     <a href="https://developer.android.com/jetpack/compose"><img src="https://img.shields.io/badge/Compose-Material_3-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white" alt="Compose"/></a>
     <img src="https://img.shields.io/badge/Min_SDK-24-brightgreen?style=for-the-badge" alt="Min SDK"/>
-    <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License"/>
   </p>
 </div>
 
@@ -19,7 +18,7 @@
 ## 📖 Project Overview
 
 ### What is it?
-A privacy-first, offline, "all-in-one" Android calculator built for power users.
+An "all-in-one" Android calculator built for power users.
 
 ### Why did you build it?
 Most calculator apps today are either too basic, fragmented across multiple apps, or bloated with intrusive ads and unnecessary permissions. 
@@ -39,7 +38,7 @@ Most calculator apps today are either too basic, fragmented across multiple apps
 | 📜 **History** | Persistent calculation history saved securely via local Room (SQLite) database. |
 | ⚙️ **Settings** | Edge-to-edge Material 3 UI, Dark/Light theme switching, and custom Haptic Feedback integration. |
 
-### 🛡️ Privacy First
+### 🛡️ Pro's
 - **100% Offline** — Zero internet permissions required.
 - **Zero Tracking** — No analytics, no ads, no telemetry.
 - **Local Storage** — Your data never leaves your device.
@@ -47,8 +46,6 @@ Most calculator apps today are either too basic, fragmented across multiple apps
 ---
 
 ## 🛠️ Tech Stack
-
-Mantis strictly follows modern Android development practices:
 
 * **Language:** Kotlin (100%)
 * **UI Framework:** Jetpack Compose with Material 3 (Edge-to-Edge window insets, custom entry/exit animations)
@@ -102,14 +99,6 @@ com.kush.mantis/
 - **Domain Layer:** Business logic (e.g., `EvaluateExpressionUseCase`, `GetHistoryUseCase`) isolates the UI from data sources.
 - **Presentation Layer:** Jetpack Compose observes state emitted via Kotlin `StateFlow` from ViewModels.
 - **Data Layer:** Room DAOs and DataStore manage actual persistence.
-
----
-
-## 🤝 Contributing
-Contributions are always welcome. Please see the [Contributing Guide](CONTRIBUTING.md) for details on submitting pull requests.
-
-## 📄 License
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
 ---
 
