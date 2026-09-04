@@ -1,5 +1,5 @@
-﻿<div align="center">
-  <img src="design/logo/wings_playstore_512.png" alt="Mantis Calculator" width="120" style="border-radius: 24px; box-shadow: 0 4px 14px rgba(0,0,0,0.1);"/>
+<div align="center">
+  <img src="design/logo/wings_only.svg" alt="Mantis Calculator" width="120" style="border-radius: 24px; box-shadow: 0 4px 14px rgba(0,0,0,0.1);"/>
 
   <h1>Mantis Calculator</h1>
   
@@ -33,8 +33,8 @@ Most calculator apps today are either too basic, fragmented across multiple apps
 | Mode | Highlights |
 |------|------------|
 | 🔢 **Basic** | Standard arithmetic for everyday use, with parentheses support and precise large-number formatting. |
-| 📐 **Scientific** | Advanced math (sin, cos, 	an, log, ln, x^y, x², √, e) with a dynamic, stateful toggle between **Degrees and Radians**. |
-| 💻 **Programmer** | Real-time base conversions (DEC, HEX, OCT, BIN) and live bitwise logic operations (AND, OR, XOR, <<, >>). |
+| 📐 **Scientific** | Advanced math (`sin`, `cos`, `tan`, `log`, `ln`, `x^y`, `x²`, `√`, `e`) with a dynamic, stateful toggle between **Degrees and Radians**. |
+| 💻 **Programmer** | Real-time base conversions (`DEC`, `HEX`, `OCT`, `BIN`) and live bitwise logic operations (`AND`, `OR`, `XOR`, `<<`, `>>`). |
 | ⚖️ **Converter** | Instant unit conversions spanning Length, Weight, Temperature, and **Volume**. |
 | 📜 **History** | Persistent calculation history saved securely via local Room (SQLite) database. |
 | ⚙️ **Settings** | Edge-to-edge Material 3 UI, Dark/Light theme switching, and custom Haptic Feedback integration. |
@@ -62,7 +62,7 @@ Mantis strictly follows modern Android development practices:
 
 ## 🏗️ Architecture
 
-`	ext
+```text
              USER
                │
                ▼
@@ -81,11 +81,11 @@ Mantis strictly follows modern Android development practices:
  │ mXparser    │         │ Room DB     │
  │ (Math)      │         │ (History)   │
  └─────────────┘         └─────────────┘
-`
+```
 
 The project is modularized by feature, ensuring code is scalable, testable, and highly decoupled.
 
-`	ext
+```text
 com.kush.mantis/
 ├── core/                          # Shared UI components, DI modules, Data layers
 ├── features/                      
@@ -97,33 +97,11 @@ com.kush.mantis/
 │   └── settings/                  # DataStore preferences & Haptics
 ├── navigation/                    # Bottom bar & animated route transitions
 └── ui/theme/                      # Material 3 color schemes
-`
+```
 
-- **Domain Layer:** Business logic (e.g., EvaluateExpressionUseCase, GetHistoryUseCase) isolates the UI from data sources.
-- **Presentation Layer:** Jetpack Compose observes state emitted via Kotlin StateFlow from ViewModels.
+- **Domain Layer:** Business logic (e.g., `EvaluateExpressionUseCase`, `GetHistoryUseCase`) isolates the UI from data sources.
+- **Presentation Layer:** Jetpack Compose observes state emitted via Kotlin `StateFlow` from ViewModels.
 - **Data Layer:** Room DAOs and DataStore manage actual persistence.
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-- [Android Studio](https://developer.android.com/studio) (Koala or later recommended)
-- JDK 17+
-- Android SDK 24+ (Target SDK 35)
-
-### Build & Run
-`ash
-# Clone the repository
-git clone https://github.com/redrighthand2007-hash/mantis-calculator.git
-
-# Navigate to the directory
-cd mantis-calculator
-
-# Build the project (Debug APK)
-./gradlew assembleDebug
-`
-Alternatively, simply open the project folder in Android Studio and hit the green ▶️ **Run** button.
 
 ---
 
