@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- Suppress warning for square launcher icons filling their region (intentional design) -->
+    <issue id="IconLauncherShape" severity="ignore" />
+    <!-- Suppress dependency update warnings since latest alpha/beta dependencies require unreleased Android SDK 36/37 -->
+    <issue id="GradleDependency" severity="ignore" />
+</lint>
