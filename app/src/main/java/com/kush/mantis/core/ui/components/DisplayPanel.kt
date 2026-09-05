@@ -12,7 +12,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalTextInputService
+
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -43,9 +43,7 @@ fun DisplayPanel(
                 modifier = Modifier.fillMaxSize().padding(16.dp),
                 contentAlignment = Alignment.BottomEnd
             ) {
-                CompositionLocalProvider(
-                    LocalTextInputService provides null
-                ) {
+                DisableSoftKeyboard {
                     BasicTextField(
                         value = expression,
                         onValueChange = onExpressionChange,
