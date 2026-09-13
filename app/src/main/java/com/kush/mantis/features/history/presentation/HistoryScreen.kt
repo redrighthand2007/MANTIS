@@ -35,6 +35,39 @@ fun HistoryScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
+        if (historyList.isEmpty()) {
+            Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Text(text = "No history yet", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier.weight(1f).fillMaxWidth(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                if (filterMode == "By Mode") {
+                    val grouped = historyList.groupBy { it.mode }
+                    grouped.forEach { (mode, items) ->
+                        item {
+                            Text(
+                                text = mode,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
+                            )
+                        }
+                        items(items) { item ->
+                            HistoryItemCard(item)
+                        }
+                    }
+                } else {
+                    items(historyList) { item ->
+                        HistoryItemCard(item)
+                    }
+                }
+            }
+        }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -59,39 +92,6 @@ fun HistoryScreen(
                     contentDescription = "Clear History",
                     tint = MaterialTheme.colorScheme.primary
                 )
-            }
-        }
-
-        if (historyList.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = "No history yet", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                if (filterMode == "By Mode") {
-                    val grouped = historyList.groupBy { it.mode }
-                    grouped.forEach { (mode, items) ->
-                        item {
-                            Text(
-                                text = mode,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
-                            )
-                        }
-                        items(items) { item ->
-                            HistoryItemCard(item)
-                        }
-                    }
-                } else {
-                    items(historyList) { item ->
-                        HistoryItemCard(item)
-                    }
-                }
             }
         }
     }
