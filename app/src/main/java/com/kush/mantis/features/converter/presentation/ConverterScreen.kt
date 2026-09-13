@@ -39,14 +39,7 @@ fun ConverterScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        com.kush.mantis.core.ui.components.PillSelector(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
-            items = com.kush.mantis.features.converter.domain.UnitDefinitions.Categories.keys.toList(),
-            selectedItem = category,
-            onItemSelected = { selected ->
-                viewModel.onEvent(ConverterEvent.SetCategory(selected))
-            }
-        )
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Upper Display Area
         Column(
@@ -125,14 +118,29 @@ fun ConverterScreen(
             }
         }
 
-        // Keypad Area
+        // PillSelector & Keypad Area
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.65f)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            com.kush.mantis.core.ui.components.PillSelector(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 12.dp),
+                items = com.kush.mantis.features.converter.domain.UnitDefinitions.Categories.keys.toList(),
+                selectedItem = category,
+                onItemSelected = { selected ->
+                    viewModel.onEvent(ConverterEvent.SetCategory(selected))
+                }
+            )
+
+            // Keypad Area
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
             val rowModifier = Modifier.weight(1f)
             val isHex = category == "Base" && fromUnit.name == "Hexadecimal"
             
@@ -176,4 +184,5 @@ fun ConverterScreen(
             }
         }
     }
+}
 }

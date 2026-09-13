@@ -38,27 +38,7 @@ fun ProgrammerScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        com.kush.mantis.core.ui.components.PillSelector(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
-            items = listOf("HEX", "DEC", "OCT", "BIN"),
-            selectedItem = when (activeBase) {
-                16 -> "HEX"
-                10 -> "DEC"
-                8 -> "OCT"
-                2 -> "BIN"
-                else -> "DEC"
-            },
-            onItemSelected = { selected ->
-                val base = when (selected) {
-                    "HEX" -> 16
-                    "DEC" -> 10
-                    "OCT" -> 8
-                    "BIN" -> 2
-                    else -> 10
-                }
-                viewModel.onEvent(ProgrammerEvent.SetBase(base))
-            }
-        )
+        Spacer(modifier = Modifier.height(16.dp))
 
         DisplayPanel(
             expression = expression,
@@ -67,14 +47,42 @@ fun ProgrammerScreen(
             modifier = Modifier.weight(0.35f)
         )
 
-        // Keypad
+        // PillSelector & Keypad Area
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.65f)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            com.kush.mantis.core.ui.components.PillSelector(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 12.dp),
+                items = listOf("HEX", "DEC", "OCT", "BIN"),
+                selectedItem = when (activeBase) {
+                    16 -> "HEX"
+                    10 -> "DEC"
+                    8 -> "OCT"
+                    2 -> "BIN"
+                    else -> "DEC"
+                },
+                onItemSelected = { selected ->
+                    val base = when (selected) {
+                        "HEX" -> 16
+                        "DEC" -> 10
+                        "OCT" -> 8
+                        "BIN" -> 2
+                        else -> 10
+                    }
+                    viewModel.onEvent(ProgrammerEvent.SetBase(base))
+                }
+            )
+
+            // Keypad
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
             val rowModifier = Modifier.weight(1f)
             
             // Hex Letters Row 1
@@ -119,4 +127,5 @@ fun ProgrammerScreen(
             }
         }
     }
+}
 }

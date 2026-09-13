@@ -35,6 +35,8 @@ fun HistoryScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
+        Spacer(modifier = Modifier.height(16.dp))
+
         if (historyList.isEmpty()) {
             Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
                 Text(text = "No history yet", color = MaterialTheme.colorScheme.onSurfaceVariant)
