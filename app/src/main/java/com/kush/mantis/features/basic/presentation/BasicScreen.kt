@@ -49,10 +49,10 @@ fun BasicScreen(
         ) {
             // MANTIS Logo Box - Creative Banner
             val isDark = androidx.compose.foundation.isSystemInDarkTheme()
-            val gradientStart = if (isDark) com.kush.mantis.ui.theme.MantisGreenDark else androidx.compose.ui.graphics.Color(0xFFC4F9D9)
-            val gradientEnd = if (isDark) com.kush.mantis.ui.theme.MantisGreen else com.kush.mantis.ui.theme.MantisGreenLight
+            val gradientStart = if (isDark) androidx.compose.ui.graphics.Color(0xFF053621) else androidx.compose.ui.graphics.Color(0xFFC4F9D9)
+            val gradientEnd = if (isDark) com.kush.mantis.ui.theme.MantisGreenDark else com.kush.mantis.ui.theme.MantisGreenLight
             val titleColor = if (isDark) androidx.compose.ui.graphics.Color.White else com.kush.mantis.ui.theme.MantisGreenDark
-            val subtitleColor = if (isDark) com.kush.mantis.ui.theme.MantisGreenLight else com.kush.mantis.ui.theme.MantisGreenDark.copy(alpha = 0.8f)
+            val subtitleColor = if (isDark) com.kush.mantis.ui.theme.MantisGreen.copy(alpha = 0.8f) else com.kush.mantis.ui.theme.MantisGreenDark.copy(alpha = 0.8f)
 
             androidx.compose.material3.Card(
                 modifier = Modifier.fillMaxWidth().weight(2f),
@@ -71,12 +71,12 @@ fun BasicScreen(
                 ) {
                     androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
                         drawCircle(
-                            color = (if (isDark) com.kush.mantis.ui.theme.MantisGreenLight else androidx.compose.ui.graphics.Color.White).copy(alpha = 0.25f),
+                            color = androidx.compose.ui.graphics.Color.White.copy(alpha = if (isDark) 0.03f else 0.25f),
                             radius = size.minDimension * 1.2f,
                             center = androidx.compose.ui.geometry.Offset(size.width * 0.8f, size.height * -0.2f)
                         )
                         drawCircle(
-                            color = (if (isDark) com.kush.mantis.ui.theme.MantisGreenLight else androidx.compose.ui.graphics.Color.White).copy(alpha = 0.2f),
+                            color = androidx.compose.ui.graphics.Color.White.copy(alpha = if (isDark) 0.02f else 0.20f),
                             radius = size.minDimension * 0.6f,
                             center = androidx.compose.ui.geometry.Offset(size.width * 0.1f, size.height * 1.1f)
                         )
