@@ -11,8 +11,6 @@ import com.kush.mantis.features.basic.presentation.BasicScreen
 import com.kush.mantis.features.scientific.presentation.ScientificScreen
 import com.kush.mantis.features.programmer.presentation.ProgrammerScreen
 import com.kush.mantis.features.converter.presentation.ConverterScreen
-import com.kush.mantis.features.history.presentation.HistoryScreen
-import com.kush.mantis.features.settings.presentation.SettingsScreen
 
 @Composable
 fun MantisNavHost(isHapticEnabled: Boolean = true) {
@@ -22,9 +20,7 @@ fun MantisNavHost(isHapticEnabled: Boolean = true) {
         BasicRoute::class.qualifiedName,
         ScientificRoute::class.qualifiedName,
         ProgrammerRoute::class.qualifiedName,
-        ConverterRoute::class.qualifiedName,
-        HistoryRoute::class.qualifiedName,
-        SettingsRoute::class.qualifiedName
+        ConverterRoute::class.qualifiedName
     )
 
     Scaffold(
@@ -75,8 +71,6 @@ fun MantisNavHost(isHapticEnabled: Boolean = true) {
             composable<ScientificRoute> { ScientificScreen() }
             composable<ProgrammerRoute> { ProgrammerScreen() }
             composable<ConverterRoute> { ConverterScreen() }
-            composable<HistoryRoute> { HistoryScreen() }
-            composable<SettingsRoute> { SettingsScreen() }
         }
     }
 }

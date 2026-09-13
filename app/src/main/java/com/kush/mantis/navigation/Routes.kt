@@ -6,5 +6,3 @@ import kotlinx.serialization.Serializable
 @Serializable object ScientificRoute
 @Serializable object ProgrammerRoute
 @Serializable object ConverterRoute
-@Serializable object HistoryRoute
-@Serializable object SettingsRoute

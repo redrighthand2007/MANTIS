@@ -3,8 +3,6 @@ package com.kush.mantis.features.basic.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kush.mantis.features.basic.domain.EvaluateExpressionUseCase
-import com.kush.mantis.features.history.data.CalculationHistory
-import com.kush.mantis.features.history.domain.InsertHistoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,8 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BasicViewModel @Inject constructor(
-    private val evaluateExpressionUseCase: EvaluateExpressionUseCase,
-    private val insertHistoryUseCase: InsertHistoryUseCase
+    private val evaluateExpressionUseCase: EvaluateExpressionUseCase
 ) : ViewModel() {
 
     private val _expression = MutableStateFlow(TextFieldValue(""))
@@ -48,15 +45,7 @@ class BasicViewModel @Inject constructor(
             is BasicCalcEvent.OnEqualsClick -> {
                 val finalResult = evaluateExpressionUseCase(_expression.value.text)
                 if (finalResult.isNotEmpty()) {
-                    viewModelScope.launch {
-                        insertHistoryUseCase(
-                            CalculationHistory(
-                                expression = _expression.value.text,
-                                result = finalResult,
-                                mode = "Basic"
-                            )
-                        )
-                    }
+                    
                     _expression.value = TextFieldValue(finalResult, androidx.compose.ui.text.TextRange(finalResult.length))
                     _result.value = ""
                 }

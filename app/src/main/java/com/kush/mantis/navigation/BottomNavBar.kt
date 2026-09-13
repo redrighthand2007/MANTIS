@@ -19,8 +19,6 @@ import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.Science
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.SwapVert
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -38,9 +36,7 @@ fun BottomNavBar(navController: NavController, isHapticEnabled: Boolean = true) 
         Pair(Icons.Filled.Calculate, BasicRoute),
         Pair(Icons.Filled.Science, ScientificRoute),
         Pair(Icons.Filled.Code, ProgrammerRoute),
-        Pair(Icons.Filled.SwapVert, ConverterRoute),
-        Pair(Icons.Filled.History, HistoryRoute),
-        Pair(Icons.Filled.Settings, SettingsRoute)
+        Pair(Icons.Filled.SwapVert, ConverterRoute)
     )
 
     val view = androidx.compose.ui.platform.LocalView.current

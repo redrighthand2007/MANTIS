@@ -12,7 +12,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.kush.mantis.features.settings.domain.SettingsUseCases
 import com.kush.mantis.navigation.MantisNavHost
 import com.kush.mantis.ui.theme.MantisTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,8 +21,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var settingsUseCases: SettingsUseCases
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -33,7 +30,7 @@ class MainActivity : ComponentActivity() {
         
 
         setContent {
-            val isHapticEnabled by settingsUseCases.hapticFeedbackFlow.collectAsState(initial = true)
+            val isHapticEnabled = true
             val isDarkTheme = isSystemInDarkTheme()
 
             MantisTheme(darkTheme = isDarkTheme) {

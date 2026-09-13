@@ -3,8 +3,6 @@ package com.kush.mantis.features.scientific.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kush.mantis.features.basic.domain.EvaluateExpressionUseCase
-import com.kush.mantis.features.history.data.CalculationHistory
-import com.kush.mantis.features.history.domain.InsertHistoryUseCase
 import com.kush.mantis.features.scientific.domain.ScientificFunctions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,8 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ScientificViewModel @Inject constructor(
-    private val evaluateExpressionUseCase: EvaluateExpressionUseCase,
-    private val insertHistoryUseCase: InsertHistoryUseCase
+    private val evaluateExpressionUseCase: EvaluateExpressionUseCase
 ) : ViewModel() {
 
     private val _expression = MutableStateFlow(TextFieldValue(""))
@@ -53,15 +50,7 @@ class ScientificViewModel @Inject constructor(
             is ScientificEvent.OnEquals -> {
                 val finalResult = evaluateExpressionUseCase(_expression.value.text, _isDegreeMode.value)
                 if (finalResult.isNotEmpty()) {
-                    viewModelScope.launch {
-                        insertHistoryUseCase(
-                            CalculationHistory(
-                                expression = _expression.value.text,
-                                result = finalResult,
-                                mode = "Scientific"
-                            )
-                        )
-                    }
+                    
                     _expression.value = TextFieldValue(finalResult, androidx.compose.ui.text.TextRange(finalResult.length))
                     _result.value = ""
                 }
