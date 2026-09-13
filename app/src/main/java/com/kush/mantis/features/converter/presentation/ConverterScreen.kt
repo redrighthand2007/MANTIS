@@ -39,26 +39,12 @@ fun ConverterScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        TopHeader(
-            title = "Converter",
-            trailingContent = {
-                Box {
-                    Text(
-                        text = "$category ▼",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MantisGreen,
-                        modifier = Modifier.clickable { categoryExpanded = true }.padding(8.dp)
-                    )
-                    DropdownMenu(expanded = categoryExpanded, onDismissRequest = { categoryExpanded = false }, modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)) {
-                        UnitDefinitions.Categories.keys.forEach { cat ->
-                            DropdownMenuItem(
-                                text = { Text(cat) },
-                                onClick = { viewModel.onEvent(ConverterEvent.SetCategory(cat)); categoryExpanded = false }
-                            )
-                        }
-                    }
-                }
+        com.kush.mantis.core.ui.components.PillSelector(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
+            items = com.kush.mantis.features.converter.domain.UnitDefinitions.Categories.keys.toList(),
+            selectedItem = category,
+            onItemSelected = { selected ->
+                viewModel.onEvent(ConverterEvent.SetCategory(selected))
             }
         )
 

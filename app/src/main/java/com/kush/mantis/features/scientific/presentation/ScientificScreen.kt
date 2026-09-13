@@ -32,7 +32,7 @@ fun ScientificScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        TopHeader(title = "Scientific")
+        Spacer(modifier = Modifier.height(16.dp))
 
         DisplayPanel(
             expression = expression,

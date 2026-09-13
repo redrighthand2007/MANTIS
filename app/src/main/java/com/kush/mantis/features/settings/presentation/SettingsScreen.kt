@@ -33,7 +33,7 @@ fun SettingsScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        TopHeader(title = "Settings")
+        Spacer(modifier = Modifier.height(16.dp))
 
         Column(
             modifier = Modifier
@@ -77,10 +77,13 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Haptics
-            Card(modifier = Modifier.fillMaxWidth()) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+            ) {
                 Row(modifier = Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                     Text("Haptic Feedback", fontSize = 18.sp)
-                    Switch(checked = hapticFeedback, onCheckedChange = { viewModel.setHapticFeedback(it) }, colors = SwitchDefaults.colors(checkedThumbColor = MantisGreen, checkedTrackColor = MantisGreen.copy(alpha=0.5f)))
+                    Switch(checked = hapticFeedback, onCheckedChange = { viewModel.setHapticFeedback(it) }, colors = SwitchDefaults.colors(checkedThumbColor = MantisGreen, checkedTrackColor = MantisGreen.copy(alpha=0.5f), uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant, uncheckedTrackColor = MaterialTheme.colorScheme.background))
                 }
             }
 
@@ -101,7 +104,10 @@ fun SettingsScreen(
 fun ExpandableRow(title: String, content: String) {
     var expanded by remember { mutableStateOf(false) }
 
-    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).clickable { expanded = !expanded }) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).clickable { expanded = !expanded },
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Text(title, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)

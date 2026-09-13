@@ -30,7 +30,7 @@ fun BasicScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        TopHeader(title = "Basic")
+        Spacer(modifier = Modifier.height(16.dp))
 
         DisplayPanel(
             expression = expression,

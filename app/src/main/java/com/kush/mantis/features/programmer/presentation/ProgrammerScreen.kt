@@ -38,24 +38,25 @@ fun ProgrammerScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        TopHeader(
-            title = "Programmer",
-            trailingContent = {
-                Box {
-                    Text(
-                        text = "Base $activeBase ▼",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MantisGreen,
-                        modifier = Modifier.clickable { baseExpanded = true }.padding(8.dp)
-                    )
-                    DropdownMenu(expanded = baseExpanded, onDismissRequest = { baseExpanded = false }, modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)) {
-                        DropdownMenuItem(text = { Text("HEX (16)") }, onClick = { viewModel.onEvent(ProgrammerEvent.SetBase(16)); baseExpanded = false })
-                        DropdownMenuItem(text = { Text("DEC (10)") }, onClick = { viewModel.onEvent(ProgrammerEvent.SetBase(10)); baseExpanded = false })
-                        DropdownMenuItem(text = { Text("OCT (8)") }, onClick = { viewModel.onEvent(ProgrammerEvent.SetBase(8)); baseExpanded = false })
-                        DropdownMenuItem(text = { Text("BIN (2)") }, onClick = { viewModel.onEvent(ProgrammerEvent.SetBase(2)); baseExpanded = false })
-                    }
+        com.kush.mantis.core.ui.components.PillSelector(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
+            items = listOf("HEX", "DEC", "OCT", "BIN"),
+            selectedItem = when (activeBase) {
+                16 -> "HEX"
+                10 -> "DEC"
+                8 -> "OCT"
+                2 -> "BIN"
+                else -> "DEC"
+            },
+            onItemSelected = { selected ->
+                val base = when (selected) {
+                    "HEX" -> 16
+                    "DEC" -> 10
+                    "OCT" -> 8
+                    "BIN" -> 2
+                    else -> 10
                 }
+                viewModel.onEvent(ProgrammerEvent.SetBase(base))
             }
         )
 

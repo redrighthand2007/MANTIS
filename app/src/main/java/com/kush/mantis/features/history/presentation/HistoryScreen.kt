@@ -8,6 +8,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -16,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kush.mantis.features.history.data.CalculationHistory
 import com.kush.mantis.ui.theme.MantisGreen
-import com.kush.mantis.core.ui.components.TopHeader
+import com.kush.mantis.core.ui.components.PillSelector
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 
@@ -25,24 +28,39 @@ fun HistoryScreen(
     viewModel: HistoryViewModel = hiltViewModel()
 ) {
     val historyList by viewModel.history.collectAsState()
+    var filterMode by remember { mutableStateOf("Recent") }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        TopHeader(
-            title = "History",
-            trailingContent = {
-                IconButton(onClick = { viewModel.clearHistory() }) {
-                    Icon(
-                        imageVector = Icons.Filled.Delete,
-                        contentDescription = "Clear History",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            PillSelector(
+                items = listOf("Recent", "By Mode"),
+                selectedItem = filterMode,
+                onItemSelected = { filterMode = it },
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            IconButton(
+                onClick = { viewModel.clearHistory() },
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant, shape = androidx.compose.foundation.shape.CircleShape)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Delete,
+                    contentDescription = "Clear History",
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
-        )
+        }
 
         if (historyList.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -54,8 +72,25 @@ fun HistoryScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(historyList) { item ->
-                    HistoryItemCard(item)
+                if (filterMode == "By Mode") {
+                    val grouped = historyList.groupBy { it.mode }
+                    grouped.forEach { (mode, items) ->
+                        item {
+                            Text(
+                                text = mode,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
+                            )
+                        }
+                        items(items) { item ->
+                            HistoryItemCard(item)
+                        }
+                    }
+                } else {
+                    items(historyList) { item ->
+                        HistoryItemCard(item)
+                    }
                 }
             }
         }
