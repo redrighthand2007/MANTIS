@@ -44,13 +44,13 @@ fun ProgrammerScreen(
             expression = expression,
             onExpressionChange = { viewModel.onEvent(ProgrammerEvent.OnExpressionChange(it)) },
             result = result,
-            modifier = Modifier.weight(0.35f)
+            modifier = Modifier.weight(0.40f)
         )
         // 6 Equal Rows (1: PillSelector, 2: Hex, 3-6: Keypad)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.65f)
+                .weight(0.60f)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {

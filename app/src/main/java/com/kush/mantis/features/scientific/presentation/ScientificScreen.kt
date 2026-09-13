@@ -38,12 +38,12 @@ fun ScientificScreen(
             expression = expression,
             onExpressionChange = { viewModel.onEvent(ScientificEvent.OnExpressionChange(it)) },
             result = result,
-            modifier = Modifier.weight(0.35f)
+            modifier = Modifier.weight(0.40f)
         )
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.65f)
+                .weight(0.60f)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
