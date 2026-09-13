@@ -31,8 +31,8 @@ fun DisplayPanel(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.SpaceEvenly
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         // Top Box (Typing Inputs)
         Card(
@@ -68,8 +68,6 @@ fun DisplayPanel(
                 }
             }
         }
-        
-        Spacer(modifier = Modifier.height(8.dp))
         
         // Bottom Box (Output)
         Card(

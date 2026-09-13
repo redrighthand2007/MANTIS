@@ -31,7 +31,6 @@ fun BasicScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
 
         DisplayPanel(
             expression = expression,
@@ -45,7 +44,7 @@ fun BasicScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.60f)
-                .padding(16.dp),
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             // MANTIS Logo Box

@@ -39,15 +39,14 @@ fun ConverterScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
 
         // Upper Display Area
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.40f)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.SpaceEvenly
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             // Top Box (Input Value)
             Card(
@@ -74,8 +73,6 @@ fun ConverterScreen(
                     }
                 }
             }
-            
-            Spacer(modifier = Modifier.height(8.dp))
 
             // Bottom Box (Output Value)
             Card(
@@ -108,7 +105,7 @@ fun ConverterScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.60f)
-                .padding(16.dp),
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             val rowModifier = Modifier.weight(1f)
