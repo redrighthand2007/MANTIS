@@ -96,10 +96,10 @@ fun SettingsScreen(
             Button(
                 onClick = { (context as? android.app.Activity)?.finishAffinity() },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = AccentRed),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                 shape = RoundedCornerShape(16.dp)
             ) {
-                Text("Close App", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                Text("Close App", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimary)
             }
         }
     }
