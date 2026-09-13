@@ -160,7 +160,6 @@ fun ConverterScreen(
                     }
                 }
             }
-
             // Keypad Area
             Column(
                 modifier = Modifier
@@ -169,48 +168,42 @@ fun ConverterScreen(
                     .padding(bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-            val rowModifier = Modifier.weight(1f)
-            val isHex = category == "Base" && fromUnit.name == "Hexadecimal"
-            
-            if (category == "Base") {
-                Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    CalcButton("A", Modifier.weight(1f), textColor = if(isHex) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(isHex) viewModel.onEvent(ConverterEvent.OnInput("A")) }
-                    CalcButton("B", Modifier.weight(1f), textColor = if(isHex) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(isHex) viewModel.onEvent(ConverterEvent.OnInput("B")) }
-                    CalcButton("C", Modifier.weight(1f), textColor = if(isHex) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(isHex) viewModel.onEvent(ConverterEvent.OnInput("C")) }
-                    CalcButton("D", Modifier.weight(1f), textColor = if(isHex) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(isHex) viewModel.onEvent(ConverterEvent.OnInput("D")) }
-                }
-                Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    CalcButton("E", Modifier.weight(1f), textColor = if(isHex) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(isHex) viewModel.onEvent(ConverterEvent.OnInput("E")) }
-                    CalcButton("F", Modifier.weight(1f), textColor = if(isHex) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(isHex) viewModel.onEvent(ConverterEvent.OnInput("F")) }
-                    CalcButton("", Modifier.weight(1f)) {}
-                    CalcButton("", Modifier.weight(1f)) {}
-                }
-            }
+                val rowModifier = Modifier.weight(1f)
+                val disabledColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
 
-            // Normal Keypad
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("7", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("7")) }
-                CalcButton("8", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("8")) }
-                CalcButton("9", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("9")) }
-                CalcButton("C", Modifier.weight(1f), textColor = AccentRed) { viewModel.onEvent(ConverterEvent.OnClear) }
-            }
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("4", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("4")) }
-                CalcButton("5", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("5")) }
-                CalcButton("6", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("6")) }
-                CalcButton("-", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ConverterEvent.OnInput("-")) }
-            }
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("1", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("1")) }
-                CalcButton("2", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("2")) }
-                CalcButton("3", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("3")) }
-                CalcButton(".", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput(".")) }
-            }
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("0", Modifier.weight(3f)) { viewModel.onEvent(ConverterEvent.OnInput("0")) }
-                CalcButton("⌫", Modifier.weight(1f), textColor = AccentOrange) { viewModel.onEvent(ConverterEvent.OnDelete) }
+                // Row 1
+                Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    CalcButton("7", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("7")) }
+                    CalcButton("8", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("8")) }
+                    CalcButton("9", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("9")) }
+                    CalcButton("(", Modifier.weight(1f), textColor = disabledColor) {}
+                    CalcButton(")", Modifier.weight(1f), textColor = disabledColor) {}
+                }
+                // Row 2
+                Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    CalcButton("4", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("4")) }
+                    CalcButton("5", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("5")) }
+                    CalcButton("6", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("6")) }
+                    CalcButton("+", Modifier.weight(1f), textColor = disabledColor) {}
+                    CalcButton("-", Modifier.weight(1f), textColor = disabledColor) {}
+                }
+                // Row 3
+                Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    CalcButton("1", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("1")) }
+                    CalcButton("2", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("2")) }
+                    CalcButton("3", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("3")) }
+                    CalcButton("÷", Modifier.weight(1f), textColor = disabledColor) {}
+                    CalcButton("×", Modifier.weight(1f), textColor = disabledColor) {}
+                }
+                // Row 4
+                Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    CalcButton("C", Modifier.weight(1f), textColor = AccentRed) { viewModel.onEvent(ConverterEvent.OnClear) }
+                    CalcButton("0", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("0")) }
+                    CalcButton(".", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput(".")) }
+                    CalcButton("⌫", Modifier.weight(1f), textColor = AccentOrange) { viewModel.onEvent(ConverterEvent.OnDelete) }
+                    CalcButton("=", Modifier.weight(1f), color = MantisGreen, textColor = Color.Black) {}
+                }
             }
         }
     }
-}
 }

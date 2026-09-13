@@ -12,6 +12,7 @@ class EvaluateExpressionUseCase @Inject constructor() {
         val sanitizedExpression = expression
             .replace("×", "*")
             .replace("÷", "/")
+            .replace("A-", "*") // Keep fallback just in case
         
         if (isDegreeMode) {
             mXparser.setDegreesMode()

@@ -40,7 +40,6 @@ fun ScientificScreen(
             result = result,
             modifier = Modifier.weight(0.35f)
         )
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -48,63 +47,57 @@ fun ScientificScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            // Scientific Functions LazyRow
+            androidx.compose.foundation.lazy.LazyRow(
+                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                item { CalcButton("2nd", Modifier.width(72.dp).height(48.dp), color = if (isSecondMode) MantisGreen else MaterialTheme.colorScheme.surfaceVariant, textColor = if (isSecondMode) Color.Black else MaterialTheme.colorScheme.onSurface) { viewModel.onEvent(ScientificEvent.ToggleSecondMode) } }
+                item { CalcButton(if (isDegreeMode) "DEG" else "RAD", Modifier.width(72.dp).height(48.dp)) { viewModel.onEvent(ScientificEvent.ToggleAngleMode) } }
+                item { CalcButton(if (isSecondMode) "sin⁻¹" else "sin", Modifier.width(72.dp).height(48.dp)) { viewModel.onEvent(ScientificEvent.OnInput(if (isSecondMode) "asin(" else "sin(")) } }
+                item { CalcButton(if (isSecondMode) "cos⁻¹" else "cos", Modifier.width(72.dp).height(48.dp)) { viewModel.onEvent(ScientificEvent.OnInput(if (isSecondMode) "acos(" else "cos(")) } }
+                item { CalcButton(if (isSecondMode) "tan⁻¹" else "tan", Modifier.width(72.dp).height(48.dp)) { viewModel.onEvent(ScientificEvent.OnInput(if (isSecondMode) "atan(" else "tan(")) } }
+                item { CalcButton("x^y", Modifier.width(72.dp).height(48.dp)) { viewModel.onEvent(ScientificEvent.OnInput("^")) } }
+                item { CalcButton("√", Modifier.width(72.dp).height(48.dp)) { viewModel.onEvent(ScientificEvent.OnInput("√(")) } }
+                item { CalcButton("ln", Modifier.width(72.dp).height(48.dp)) { viewModel.onEvent(ScientificEvent.OnInput("ln(")) } }
+                item { CalcButton("log", Modifier.width(72.dp).height(48.dp)) { viewModel.onEvent(ScientificEvent.OnInput("log10(")) } }
+                item { CalcButton("π", Modifier.width(72.dp).height(48.dp)) { viewModel.onEvent(ScientificEvent.OnInput("π")) } }
+                item { CalcButton("e", Modifier.width(72.dp).height(48.dp)) { viewModel.onEvent(ScientificEvent.OnInput("e")) } }
+            }
+
             val rowModifier = Modifier.weight(1f)
 
-            // Scientific Row 1
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton(if (isSecondMode) "2nd" else "2nd", Modifier.weight(1f), color = if (isSecondMode) MantisGreen else MaterialTheme.colorScheme.surfaceVariant, textColor = if (isSecondMode) Color.Black else MaterialTheme.colorScheme.onSurface) { viewModel.onEvent(ScientificEvent.ToggleSecondMode) }
-                CalcButton(if (isDegreeMode) "DEG" else "RAD", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.ToggleAngleMode) }
-                CalcButton(if (isSecondMode) "sin⁻¹" else "sin", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput(if (isSecondMode) "sin⁻¹" else "sin")) }
-                CalcButton(if (isSecondMode) "cos⁻¹" else "cos", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput(if (isSecondMode) "cos⁻¹" else "cos")) }
-                CalcButton(if (isSecondMode) "tan⁻¹" else "tan", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput(if (isSecondMode) "tan⁻¹" else "tan")) }
-            }
-
-            // Scientific Row 2
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton(if (isSecondMode) "x³" else "x²", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput(if (isSecondMode) "x³" else "x²")) }
-                CalcButton("xⁿ", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("xⁿ")) }
-                CalcButton(if (isSecondMode) "³√" else "√", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput(if (isSecondMode) "³√" else "√")) }
-                CalcButton(if (isSecondMode) "eˣ" else "ln", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput(if (isSecondMode) "eˣ" else "ln")) }
-                CalcButton(if (isSecondMode) "10ˣ" else "log", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput(if (isSecondMode) "10ˣ" else "log")) }
-            }
-
-            // Row 3
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("(", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ScientificEvent.OnInput("(")) }
-                CalcButton(")", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ScientificEvent.OnInput(")")) }
-                CalcButton("π", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("π")) }
-                CalcButton("e", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("e")) }
-                CalcButton("C", Modifier.weight(1f), textColor = AccentRed) { viewModel.onEvent(ScientificEvent.OnClear) }
-            }
-            // Row 4
+            // Row 1
             Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 CalcButton("7", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("7")) }
                 CalcButton("8", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("8")) }
                 CalcButton("9", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("9")) }
-                CalcButton("⌫", Modifier.weight(1f), textColor = AccentOrange) { viewModel.onEvent(ScientificEvent.OnDelete) }
-                CalcButton("÷", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ScientificEvent.OnInput("÷")) }
+                CalcButton("(", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ScientificEvent.OnInput("(")) }
+                CalcButton(")", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ScientificEvent.OnInput(")")) }
             }
-            // Row 5
+            // Row 2
             Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 CalcButton("4", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("4")) }
                 CalcButton("5", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("5")) }
                 CalcButton("6", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("6")) }
-                CalcButton("×", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ScientificEvent.OnInput("×")) }
+                CalcButton("+", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ScientificEvent.OnInput("+")) }
                 CalcButton("-", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ScientificEvent.OnInput("-")) }
             }
-            // Row 6
+            // Row 3
             Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 CalcButton("1", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("1")) }
                 CalcButton("2", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("2")) }
                 CalcButton("3", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("3")) }
-                CalcButton("+", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ScientificEvent.OnInput("+")) }
-                CalcButton("=", Modifier.weight(1f), color = MantisGreen, textColor = Color.Black) { viewModel.onEvent(ScientificEvent.OnEquals) }
+                CalcButton("÷", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ScientificEvent.OnInput("÷")) }
+                CalcButton("×", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ScientificEvent.OnInput("×")) }
             }
-            // Row 7 (zero and dot)
+            // Row 4
             Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("0", Modifier.weight(2.05f)) { viewModel.onEvent(ScientificEvent.OnInput("0")) }
+                CalcButton("C", Modifier.weight(1f), textColor = AccentRed) { viewModel.onEvent(ScientificEvent.OnClear) }
+                CalcButton("0", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("0")) }
                 CalcButton(".", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput(".")) }
-                Spacer(Modifier.weight(2.05f))
+                CalcButton("⌫", Modifier.weight(1f), textColor = AccentOrange) { viewModel.onEvent(ScientificEvent.OnDelete) }
+                CalcButton("=", Modifier.weight(1f), color = MantisGreen, textColor = Color.Black) { viewModel.onEvent(ScientificEvent.OnEquals) }
             }
         }
     }
