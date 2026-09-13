@@ -62,7 +62,7 @@ fun BasicScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(
-                            brush = androidx.compose.ui.graphics.Brush.horizontalGradient(
+                            brush = androidx.compose.ui.graphics.Brush.linearGradient(
                                 colors = listOf(
                                     gradientStart,
                                     MaterialTheme.colorScheme.surfaceVariant,
