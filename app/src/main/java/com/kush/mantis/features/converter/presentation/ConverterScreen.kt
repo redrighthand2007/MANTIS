@@ -191,7 +191,7 @@ fun ConverterScreen(
                 CalcButton("0", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("0")) }
                 CalcButton(".", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput(".")) }
                 CalcButton("⌫", Modifier.weight(1f), textColor = AccentOrange) { viewModel.onEvent(ConverterEvent.OnDelete) }
-                CalcButton("=", Modifier.weight(1f), color = MantisGreen, textColor = Color.Black) {}
+                CalcButton("=", Modifier.weight(1f), color = MantisGreen, textColor = androidx.compose.ui.graphics.Color.Black) { viewModel.onEvent(ConverterEvent.OnEquals) }
             }
         }
     }
