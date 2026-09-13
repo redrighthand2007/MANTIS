@@ -48,6 +48,11 @@ fun BasicScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             // MANTIS Logo Box - Creative Banner
+            val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+            val gradientStart = if (isDark) com.kush.mantis.ui.theme.MantisGreenDark else com.kush.mantis.ui.theme.MantisGreen
+            val titleColor = if (isDark) androidx.compose.ui.graphics.Color.White else com.kush.mantis.ui.theme.MantisGreenDark
+            val subtitleColor = if (isDark) com.kush.mantis.ui.theme.MantisGreenLight else com.kush.mantis.ui.theme.MantisGreenDark
+
             androidx.compose.material3.Card(
                 modifier = Modifier.fillMaxWidth().weight(2f),
                 elevation = androidx.compose.material3.CardDefaults.cardElevation(defaultElevation = 6.dp),
@@ -59,7 +64,7 @@ fun BasicScreen(
                         .background(
                             brush = androidx.compose.ui.graphics.Brush.linearGradient(
                                 colors = listOf(
-                                    com.kush.mantis.ui.theme.MantisGreenDark,
+                                    gradientStart,
                                     MaterialTheme.colorScheme.surfaceVariant
                                 )
                             )
@@ -68,12 +73,12 @@ fun BasicScreen(
                 ) {
                     androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
                         drawCircle(
-                            color = com.kush.mantis.ui.theme.MantisGreen.copy(alpha = 0.15f),
+                            color = (if (isDark) com.kush.mantis.ui.theme.MantisGreen else androidx.compose.ui.graphics.Color.White).copy(alpha = 0.15f),
                             radius = size.minDimension * 1.2f,
                             center = androidx.compose.ui.geometry.Offset(size.width * 0.8f, size.height * -0.2f)
                         )
                         drawCircle(
-                            color = com.kush.mantis.ui.theme.MantisGreen.copy(alpha = 0.1f),
+                            color = (if (isDark) com.kush.mantis.ui.theme.MantisGreen else androidx.compose.ui.graphics.Color.White).copy(alpha = 0.1f),
                             radius = size.minDimension * 0.6f,
                             center = androidx.compose.ui.geometry.Offset(size.width * 0.1f, size.height * 1.1f)
                         )
@@ -88,7 +93,7 @@ fun BasicScreen(
                             fontSize = 28.sp,
                             fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold,
                             letterSpacing = 10.sp,
-                            color = androidx.compose.ui.graphics.Color.White
+                            color = titleColor
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         androidx.compose.material3.Text(
@@ -96,7 +101,7 @@ fun BasicScreen(
                             fontSize = 9.sp,
                             fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                             letterSpacing = 4.sp,
-                            color = com.kush.mantis.ui.theme.MantisGreenLight
+                            color = subtitleColor
                         )
                     }
                 }
