@@ -1,46 +1,12 @@
-package com.kush.mantis.features.converter.presentation
+import codecs
+import re
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.kush.mantis.core.ui.components.CalcButton
-import com.kush.mantis.core.ui.components.TopHeader
-import com.kush.mantis.features.converter.domain.UnitDefinitions
-import com.kush.mantis.ui.theme.AccentOrange
-import com.kush.mantis.ui.theme.AccentRed
-import com.kush.mantis.ui.theme.MantisGreen
+with codecs.open('app/src/main/java/com/kush/mantis/features/converter/presentation/ConverterScreen.kt', 'r', 'utf-8') as f:
+    content = f.read()
 
-@Composable
-fun ConverterScreen(
-    viewModel: ConverterViewModel = hiltViewModel()
-) {
-    val category by viewModel.category.collectAsState()
-    val units by viewModel.units.collectAsState()
-    val fromUnit by viewModel.fromUnit.collectAsState()
-    val toUnit by viewModel.toUnit.collectAsState()
-    val inputValue by viewModel.inputValue.collectAsState()
-    val outputValue by viewModel.outputValue.collectAsState()
+match_pattern = r'\s*// Upper Display Area.*?// Keypad Area'
 
-    var categoryExpanded by remember { mutableStateOf(false) }
-    var fromExpanded by remember { mutableStateOf(false) }
-    var toExpanded by remember { mutableStateOf(false) }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
+new_middle = '''
         // Upper Display Area
         Column(
             modifier = Modifier
@@ -161,56 +127,9 @@ fun ConverterScreen(
                 }
             }
 
-            // Keypad Area
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-            val rowModifier = Modifier.weight(1f)
-            val isHex = category == "Base" && fromUnit.name == "Hexadecimal"
-            
-            if (category == "Base") {
-                Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    CalcButton("A", Modifier.weight(1f), textColor = if(isHex) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(isHex) viewModel.onEvent(ConverterEvent.OnInput("A")) }
-                    CalcButton("B", Modifier.weight(1f), textColor = if(isHex) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(isHex) viewModel.onEvent(ConverterEvent.OnInput("B")) }
-                    CalcButton("C", Modifier.weight(1f), textColor = if(isHex) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(isHex) viewModel.onEvent(ConverterEvent.OnInput("C")) }
-                    CalcButton("D", Modifier.weight(1f), textColor = if(isHex) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(isHex) viewModel.onEvent(ConverterEvent.OnInput("D")) }
-                }
-                Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    CalcButton("E", Modifier.weight(1f), textColor = if(isHex) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(isHex) viewModel.onEvent(ConverterEvent.OnInput("E")) }
-                    CalcButton("F", Modifier.weight(1f), textColor = if(isHex) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(isHex) viewModel.onEvent(ConverterEvent.OnInput("F")) }
-                    CalcButton("", Modifier.weight(1f)) {}
-                    CalcButton("", Modifier.weight(1f)) {}
-                }
-            }
+            // Keypad Area'''
 
-            // Normal Keypad
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("7", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("7")) }
-                CalcButton("8", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("8")) }
-                CalcButton("9", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("9")) }
-                CalcButton("C", Modifier.weight(1f), textColor = AccentRed) { viewModel.onEvent(ConverterEvent.OnClear) }
-            }
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("4", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("4")) }
-                CalcButton("5", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("5")) }
-                CalcButton("6", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("6")) }
-                CalcButton("-", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ConverterEvent.OnInput("-")) }
-            }
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("1", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("1")) }
-                CalcButton("2", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("2")) }
-                CalcButton("3", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput("3")) }
-                CalcButton(".", Modifier.weight(1f)) { viewModel.onEvent(ConverterEvent.OnInput(".")) }
-            }
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("0", Modifier.weight(3f)) { viewModel.onEvent(ConverterEvent.OnInput("0")) }
-                CalcButton("⌫", Modifier.weight(1f), textColor = AccentOrange) { viewModel.onEvent(ConverterEvent.OnDelete) }
-            }
-        }
-    }
-}
-}
+content = re.sub(match_pattern, '\n' + new_middle, content, flags=re.DOTALL)
+
+with codecs.open('app/src/main/java/com/kush/mantis/features/converter/presentation/ConverterScreen.kt', 'w', 'utf-8') as f:
+    f.write(content)

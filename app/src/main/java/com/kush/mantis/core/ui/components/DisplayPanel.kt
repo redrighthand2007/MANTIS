@@ -40,21 +40,31 @@ fun DisplayPanel(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
         ) {
             Box(
-                modifier = Modifier.fillMaxSize().padding(16.dp),
-                contentAlignment = Alignment.BottomEnd
+                modifier = Modifier.fillMaxSize().padding(16.dp)
             ) {
-                DisableSoftKeyboard {
-                    BasicTextField(
-                        value = expression,
-                        onValueChange = onExpressionChange,
-                        textStyle = TextStyle(
-                            fontSize = 32.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.End
-                        ),
-                        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                Text(
+                    text = "Input",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                    modifier = Modifier.align(Alignment.TopStart)
+                )
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.BottomEnd
+                ) {
+                    DisableSoftKeyboard {
+                        BasicTextField(
+                            value = expression,
+                            onValueChange = onExpressionChange,
+                            textStyle = TextStyle(
+                                fontSize = 32.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                textAlign = TextAlign.End
+                            ),
+                            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
             }
         }
@@ -67,17 +77,27 @@ fun DisplayPanel(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
         ) {
             Box(
-                modifier = Modifier.fillMaxSize().padding(16.dp),
-                contentAlignment = Alignment.BottomEnd
+                modifier = Modifier.fillMaxSize().padding(16.dp)
             ) {
-                SelectionContainer {
-                    Text(
-                        text = result,
-                        fontSize = 48.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        maxLines = 1
-                    )
+                Text(
+                    text = "Output",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                    modifier = Modifier.align(Alignment.TopStart)
+                )
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.BottomEnd
+                ) {
+                    SelectionContainer {
+                        Text(
+                            text = result,
+                            fontSize = 48.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1
+                        )
+                    }
                 }
             }
         }
