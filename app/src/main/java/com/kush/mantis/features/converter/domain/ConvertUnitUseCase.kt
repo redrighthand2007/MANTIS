@@ -20,7 +20,7 @@ class ConvertUnitUseCase @Inject constructor() {
 
         val value = valueStr.toDoubleOrNull() ?: return ""
         
-        if (category == "Temperature") {
+        if (category == "Temp") {
             val celsius = when (fromUnit.symbol) {
                 "°F" -> (value - 32) * 5 / 9
                 "K" -> value - 273.15

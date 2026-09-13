@@ -35,7 +35,7 @@ object UnitDefinitions {
     val Categories = mapOf(
         "Length" to Length,
         "Weight" to Weight,
-        "Temperature" to Temperature,
+        "Temp" to Temperature,
         "Base" to Base
     )
 }
