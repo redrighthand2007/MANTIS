@@ -1,46 +1,12 @@
-package com.kush.mantis.features.scientific.presentation
+import codecs
+import re
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.kush.mantis.core.ui.components.CalcButton
-import com.kush.mantis.core.ui.components.DisplayPanel
-import com.kush.mantis.ui.theme.AccentOrange
-import com.kush.mantis.ui.theme.AccentRed
-import com.kush.mantis.ui.theme.MantisGreen
+with codecs.open('app/src/main/java/com/kush/mantis/features/scientific/presentation/ScientificScreen.kt', 'r', 'utf-8') as f:
+    content = f.read()
 
-import com.kush.mantis.core.ui.components.TopHeader
+match_pattern = r'\s*Column\(\s*modifier = Modifier\s*\.fillMaxWidth\(\)\s*\.weight\(0\.65f\).*'
 
-@Composable
-fun ScientificScreen(
-    viewModel: ScientificViewModel = hiltViewModel()
-) {
-    val expression by viewModel.expression.collectAsState()
-    val result by viewModel.result.collectAsState()
-    val isSecondMode by viewModel.isSecondMode.collectAsState()
-    val isDegreeMode by viewModel.isDegreeMode.collectAsState()
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
-        DisplayPanel(
-            expression = expression,
-            onExpressionChange = { viewModel.onEvent(ScientificEvent.OnExpressionChange(it)) },
-            result = result,
-            modifier = Modifier.weight(0.35f)
-        )
-        Column(
+new_code = '''        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.65f)
@@ -102,3 +68,9 @@ fun ScientificScreen(
         }
     }
 }
+'''
+
+content = re.sub(match_pattern, '\n' + new_code, content, flags=re.DOTALL)
+
+with codecs.open('app/src/main/java/com/kush/mantis/features/scientific/presentation/ScientificScreen.kt', 'w', 'utf-8') as f:
+    f.write(content)

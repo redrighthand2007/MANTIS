@@ -1,57 +1,17 @@
-package com.kush.mantis.features.programmer.presentation
+import codecs
+import re
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.kush.mantis.core.ui.components.CalcButton
-import com.kush.mantis.core.ui.components.TopHeader
-import com.kush.mantis.core.ui.components.DisplayPanel
-import com.kush.mantis.ui.theme.AccentOrange
-import com.kush.mantis.ui.theme.AccentRed
-import com.kush.mantis.ui.theme.MantisGreen
+with codecs.open('app/src/main/java/com/kush/mantis/features/programmer/presentation/ProgrammerScreen.kt', 'r', 'utf-8') as f:
+    content = f.read()
 
-@Composable
-fun ProgrammerScreen(
-    viewModel: ProgrammerViewModel = hiltViewModel()
-) {
-    val currentValue by viewModel.currentValue.collectAsState()
-    val activeBase by viewModel.activeBase.collectAsState()
-    val inputString by viewModel.inputString.collectAsState()
+match_pattern = r'\s*com\.kush\.mantis\.core\.ui\.components\.PillSelector\([\s\S]*'
 
-    val expression by viewModel.expression.collectAsState()
-    val result by viewModel.result.collectAsState()
-
-    var baseExpanded by remember { mutableStateOf(false) }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
-        DisplayPanel(
-            expression = expression,
-            onExpressionChange = { viewModel.onEvent(ProgrammerEvent.OnExpressionChange(it)) },
-            result = result,
-            modifier = Modifier.weight(0.35f)
-        )
-        // 6 Equal Rows (1: PillSelector, 2: Hex, 3-6: Keypad)
+new_code = '''        // 6 Equal Rows (1: PillSelector, 2: Hex, 3-6: Keypad)
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.65f)
-                .padding(16.dp),
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             val rowModifier = Modifier.weight(1f)
@@ -129,3 +89,9 @@ fun ProgrammerScreen(
         }
     }
 }
+'''
+
+content = re.sub(match_pattern, '\n' + new_code, content, flags=re.DOTALL)
+
+with codecs.open('app/src/main/java/com/kush/mantis/features/programmer/presentation/ProgrammerScreen.kt', 'w', 'utf-8') as f:
+    f.write(content)

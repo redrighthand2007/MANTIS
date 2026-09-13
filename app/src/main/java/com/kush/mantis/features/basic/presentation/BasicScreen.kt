@@ -50,7 +50,7 @@ fun BasicScreen(
         ) {
             // MANTIS Logo Box
             androidx.compose.material3.Card(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp).weight(0.5f),
+                modifier = Modifier.fillMaxWidth().weight(2f),
                 colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
             ) {
