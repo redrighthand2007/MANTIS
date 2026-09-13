@@ -47,20 +47,58 @@ fun BasicScreen(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // MANTIS Logo Box
+            // MANTIS Logo Box - Creative Banner
             androidx.compose.material3.Card(
                 modifier = Modifier.fillMaxWidth().weight(2f),
-                colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                elevation = androidx.compose.material3.CardDefaults.cardElevation(defaultElevation = 6.dp),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
             ) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.Center) {
-                    androidx.compose.material3.Text(
-                        text = "MANTIS",
-                        fontSize = 20.sp,
-                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                        letterSpacing = 8.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            brush = androidx.compose.ui.graphics.Brush.linearGradient(
+                                colors = listOf(
+                                    com.kush.mantis.ui.theme.MantisGreenDark,
+                                    MaterialTheme.colorScheme.surfaceVariant
+                                )
+                            )
+                        ),
+                    contentAlignment = androidx.compose.ui.Alignment.Center
+                ) {
+                    androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+                        drawCircle(
+                            color = com.kush.mantis.ui.theme.MantisGreen.copy(alpha = 0.15f),
+                            radius = size.minDimension * 1.2f,
+                            center = androidx.compose.ui.geometry.Offset(size.width * 0.8f, size.height * -0.2f)
+                        )
+                        drawCircle(
+                            color = com.kush.mantis.ui.theme.MantisGreen.copy(alpha = 0.1f),
+                            radius = size.minDimension * 0.6f,
+                            center = androidx.compose.ui.geometry.Offset(size.width * 0.1f, size.height * 1.1f)
+                        )
+                    }
+
+                    Column(
+                        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        androidx.compose.material3.Text(
+                            text = "M A N T I S",
+                            fontSize = 28.sp,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold,
+                            letterSpacing = 10.sp,
+                            color = androidx.compose.ui.graphics.Color.White
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        androidx.compose.material3.Text(
+                            text = "PRECISION CALCULATOR",
+                            fontSize = 9.sp,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                            letterSpacing = 4.sp,
+                            color = com.kush.mantis.ui.theme.MantisGreenLight
+                        )
+                    }
                 }
             }
 
