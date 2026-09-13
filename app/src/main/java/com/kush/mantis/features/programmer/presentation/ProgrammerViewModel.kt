@@ -42,7 +42,6 @@ class ProgrammerViewModel @Inject constructor() : ViewModel() {
                 if (pendingOperator == null) {
                     _expression.value = TextFieldValue(_inputString.value, TextRange(_inputString.value.length))
                 }
-                evaluateLive()
             }
             is ProgrammerEvent.OnExpressionChange -> {
                 _expression.value = event.value
@@ -105,15 +104,9 @@ class ProgrammerViewModel @Inject constructor() : ViewModel() {
                         ">>" -> prev shr current.toInt()
                         else -> current
                     }
-                    _currentValue.value = computed
-                    val resultStr = BaseConverter.convert(computed, _activeBase.value)
-                    _inputString.value = resultStr
-                    
-                    _expression.value = TextFieldValue(resultStr, TextRange(resultStr.length))
-                    _result.value = ""
-                    
-                    previousValue = null
-                    pendingOperator = null
+                    _result.value = BaseConverter.convert(computed, _activeBase.value)
+                } else {
+                    _result.value = BaseConverter.convert(_currentValue.value, _activeBase.value)
                 }
             }
         }
@@ -123,25 +116,6 @@ class ProgrammerViewModel @Inject constructor() : ViewModel() {
         val parsed = BaseConverter.parse(_inputString.value, _activeBase.value)
         if (parsed != null) {
             _currentValue.value = parsed
-        }
-        evaluateLive()
-    }
-
-    private fun evaluateLive() {
-        if (previousValue != null && pendingOperator != null) {
-            val current = _currentValue.value
-            val prev = previousValue!!
-            val computed = when (pendingOperator) {
-                "AND" -> prev and current
-                "OR" -> prev or current
-                "XOR" -> prev xor current
-                "<<" -> prev shl current.toInt()
-                ">>" -> prev shr current.toInt()
-                else -> current
-            }
-            _result.value = BaseConverter.convert(computed, _activeBase.value)
-        } else {
-            _result.value = BaseConverter.convert(_currentValue.value, _activeBase.value)
         }
     }
 }

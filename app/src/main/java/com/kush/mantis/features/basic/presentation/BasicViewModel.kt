@@ -27,7 +27,6 @@ class BasicViewModel @Inject constructor(
         when (event) {
             is BasicCalcEvent.OnNumberClick -> {
                 _expression.value = com.kush.mantis.core.util.CursorUtil.insertText(_expression.value, event.number)
-                evaluateLive()
             }
             is BasicCalcEvent.OnOperatorClick -> {
                 _expression.value = com.kush.mantis.core.util.CursorUtil.insertText(_expression.value, event.operator)
@@ -39,28 +38,17 @@ class BasicViewModel @Inject constructor(
             is BasicCalcEvent.OnDeleteClick -> {
                 if (_expression.value.text.isNotEmpty()) {
                     _expression.value = com.kush.mantis.core.util.CursorUtil.deleteText(_expression.value)
-                    evaluateLive()
                 }
             }
             is BasicCalcEvent.OnEqualsClick -> {
                 val finalResult = evaluateExpressionUseCase(_expression.value.text)
-                if (finalResult.isNotEmpty()) {
-                    
-                    _expression.value = TextFieldValue(finalResult, androidx.compose.ui.text.TextRange(finalResult.length))
-                    _result.value = ""
+                if (finalResult.isNotEmpty() && finalResult != "NaN") {
+                    _result.value = finalResult
                 }
             }
             is BasicCalcEvent.OnExpressionChange -> {
                 _expression.value = event.value
-                evaluateLive()
             }
-        }
-    }
-
-    private fun evaluateLive() {
-        val currentResult = evaluateExpressionUseCase(_expression.value.text)
-        if (currentResult != "NaN") {
-            _result.value = currentResult
         }
     }
 }

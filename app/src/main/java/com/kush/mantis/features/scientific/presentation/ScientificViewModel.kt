@@ -35,7 +35,6 @@ class ScientificViewModel @Inject constructor(
             is ScientificEvent.OnInput -> {
                 val mappedInput = ScientificFunctions.functionMap[event.input] ?: event.input
                 _expression.value = com.kush.mantis.core.util.CursorUtil.insertText(_expression.value, mappedInput)
-                evaluateLive()
             }
             is ScientificEvent.OnClear -> {
                 _expression.value = com.kush.mantis.core.util.CursorUtil.clear()
@@ -44,35 +43,23 @@ class ScientificViewModel @Inject constructor(
             is ScientificEvent.OnDelete -> {
                 if (_expression.value.text.isNotEmpty()) {
                     _expression.value = com.kush.mantis.core.util.CursorUtil.deleteText(_expression.value)
-                    evaluateLive()
                 }
             }
             is ScientificEvent.OnEquals -> {
                 val finalResult = evaluateExpressionUseCase(_expression.value.text, _isDegreeMode.value)
-                if (finalResult.isNotEmpty()) {
-                    
-                    _expression.value = TextFieldValue(finalResult, androidx.compose.ui.text.TextRange(finalResult.length))
-                    _result.value = ""
+                if (finalResult.isNotEmpty() && finalResult != "NaN") {
+                    _result.value = finalResult
                 }
             }
             is ScientificEvent.OnExpressionChange -> {
                 _expression.value = event.value
-                evaluateLive()
             }
             is ScientificEvent.ToggleSecondMode -> {
                 _isSecondMode.update { !it }
             }
             is ScientificEvent.ToggleAngleMode -> {
                 _isDegreeMode.update { !it }
-                evaluateLive()
             }
-        }
-    }
-
-    private fun evaluateLive() {
-        val currentResult = evaluateExpressionUseCase(_expression.value.text, _isDegreeMode.value)
-        if (currentResult != "NaN") {
-            _result.value = currentResult
         }
     }
 }

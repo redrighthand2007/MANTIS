@@ -41,21 +41,21 @@ class ConverterViewModel @Inject constructor(
                 _units.value = UnitDefinitions.Categories[event.category] ?: UnitDefinitions.Length
                 _fromUnit.value = _units.value[0]
                 _toUnit.value = _units.value.getOrElse(1) { _units.value[0] }
-                updateConversion()
+                _outputValue.value = ""
             }
             is ConverterEvent.SetFromUnit -> {
                 _fromUnit.value = event.unit
-                updateConversion()
+                _outputValue.value = ""
             }
             is ConverterEvent.SetToUnit -> {
                 _toUnit.value = event.unit
-                updateConversion()
+                _outputValue.value = ""
             }
             is ConverterEvent.SwapUnits -> {
                 val temp = _fromUnit.value
                 _fromUnit.value = _toUnit.value
                 _toUnit.value = temp
-                updateConversion()
+                _outputValue.value = ""
             }
             is ConverterEvent.OnInput -> {
                 if (_inputValue.value == "0" && event.input != ".") {
@@ -63,7 +63,6 @@ class ConverterViewModel @Inject constructor(
                 } else {
                     _inputValue.update { it + event.input }
                 }
-                updateConversion()
             }
             is ConverterEvent.OnDelete -> {
                 if (_inputValue.value.length > 1) {
@@ -71,17 +70,15 @@ class ConverterViewModel @Inject constructor(
                 } else {
                     _inputValue.value = "0"
                 }
-                updateConversion()
             }
             is ConverterEvent.OnClear -> {
                 _inputValue.value = "0"
-                updateConversion()
+                _outputValue.value = ""
+            }
+            is ConverterEvent.OnEquals -> {
+                _outputValue.value = convertUnitUseCase(_inputValue.value, _category.value, _fromUnit.value, _toUnit.value)
             }
         }
-    }
-
-    private fun updateConversion() {
-        _outputValue.value = convertUnitUseCase(_inputValue.value, _category.value, _fromUnit.value, _toUnit.value)
     }
 }
 
@@ -93,4 +90,5 @@ sealed class ConverterEvent {
     data class OnInput(val input: String) : ConverterEvent()
     object OnDelete : ConverterEvent()
     object OnClear : ConverterEvent()
+    object OnEquals : ConverterEvent()
 }
