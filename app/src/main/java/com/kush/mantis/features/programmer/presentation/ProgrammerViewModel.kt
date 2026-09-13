@@ -104,9 +104,18 @@ class ProgrammerViewModel @Inject constructor() : ViewModel() {
                         ">>" -> prev shr current.toInt()
                         else -> current
                     }
-                    _result.value = BaseConverter.convert(computed, _activeBase.value)
+                    val res = BaseConverter.convert(computed, _activeBase.value)
+                    _result.value = res
+                    _inputString.value = res
+                    _expression.value = androidx.compose.ui.text.input.TextFieldValue(res, androidx.compose.ui.text.TextRange(res.length))
+                    _currentValue.value = computed
+                    previousValue = null
+                    pendingOperator = null
                 } else {
-                    _result.value = BaseConverter.convert(_currentValue.value, _activeBase.value)
+                    val res = BaseConverter.convert(_currentValue.value, _activeBase.value)
+                    _result.value = res
+                    _inputString.value = res
+                    _expression.value = androidx.compose.ui.text.input.TextFieldValue(res, androidx.compose.ui.text.TextRange(res.length))
                 }
             }
         }

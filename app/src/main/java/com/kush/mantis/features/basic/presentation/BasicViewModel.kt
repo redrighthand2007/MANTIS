@@ -44,6 +44,7 @@ class BasicViewModel @Inject constructor(
                 val finalResult = evaluateExpressionUseCase(_expression.value.text)
                 if (finalResult.isNotEmpty() && finalResult != "NaN") {
                     _result.value = finalResult
+                    _expression.value = androidx.compose.ui.text.input.TextFieldValue(finalResult, androidx.compose.ui.text.TextRange(finalResult.length))
                 }
             }
             is BasicCalcEvent.OnExpressionChange -> {

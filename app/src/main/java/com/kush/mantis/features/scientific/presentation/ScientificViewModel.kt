@@ -49,6 +49,7 @@ class ScientificViewModel @Inject constructor(
                 val finalResult = evaluateExpressionUseCase(_expression.value.text, _isDegreeMode.value)
                 if (finalResult.isNotEmpty() && finalResult != "NaN") {
                     _result.value = finalResult
+                    _expression.value = androidx.compose.ui.text.input.TextFieldValue(finalResult, androidx.compose.ui.text.TextRange(finalResult.length))
                 }
             }
             is ScientificEvent.OnExpressionChange -> {
