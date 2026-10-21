@@ -2,6 +2,7 @@ package com.kush.mantis
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
 
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -24,6 +25,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
+        // Transparent system bars with icon colours that follow light/dark mode
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         
         License.iConfirmNonCommercialUse("Kush")

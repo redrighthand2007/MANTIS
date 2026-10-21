@@ -1,6 +1,6 @@
 package com.kush.mantis.core.ui.components
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,18 +39,21 @@ fun PillSelector(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight()
-                        .clickable(
+                        .selectable(
+                            selected = isSelected,
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
+                            role = Role.Tab,
                             onClick = { onItemSelected(item) }
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
+                    AutoSizeText(
                         text = item,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                        modifier = Modifier.padding(horizontal = 4.dp)
                     )
                 }
             }

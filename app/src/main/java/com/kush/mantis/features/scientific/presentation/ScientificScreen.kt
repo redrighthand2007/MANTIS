@@ -48,22 +48,32 @@ fun ScientificScreen(
         ) {
             val rowModifier = Modifier.weight(1f)
 
-            // Row 1 (Scientific Functions 1)
+            // Row 1 (Scientific Functions 1); "2nd" swaps keys for their inverse/alternate function
             Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton(if (isDegreeMode) "DEG" else "RAD", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.ToggleAngleMode) }
-                CalcButton("sin", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("sin(")) }
-                CalcButton("cos", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("cos(")) }
-                CalcButton("tan", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("tan(")) }
-                CalcButton("x^y", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("^")) }
+                CalcButton(
+                    "2nd",
+                    Modifier.weight(1f),
+                    color = if (isSecondMode) MantisGreen else MaterialTheme.colorScheme.surfaceVariant,
+                    textColor = if (isSecondMode) Color.Black else MaterialTheme.colorScheme.onSurface,
+                    contentDescription = if (isSecondMode) "Second functions on" else "Second functions off"
+                ) { viewModel.onEvent(ScientificEvent.ToggleSecondMode) }
+                FunctionKey(if (isSecondMode) "sin⁻¹" else "sin", viewModel)
+                FunctionKey(if (isSecondMode) "cos⁻¹" else "cos", viewModel)
+                FunctionKey(if (isSecondMode) "tan⁻¹" else "tan", viewModel)
+                CalcButton(
+                    if (isDegreeMode) "DEG" else "RAD",
+                    Modifier.weight(1f),
+                    contentDescription = if (isDegreeMode) "Degrees, switch to radians" else "Radians, switch to degrees"
+                ) { viewModel.onEvent(ScientificEvent.ToggleAngleMode) }
             }
 
             // Row 2 (Scientific Functions 2)
             Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("√", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("√(")) }
-                CalcButton("ln", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("ln(")) }
-                CalcButton("log", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("log10(")) }
-                CalcButton("π", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("π")) }
-                CalcButton("e", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("e")) }
+                FunctionKey(if (isSecondMode) "n!" else "xʸ", viewModel)
+                FunctionKey(if (isSecondMode) "³√" else "√", viewModel)
+                FunctionKey(if (isSecondMode) "eˣ" else "ln", viewModel)
+                FunctionKey(if (isSecondMode) "10ˣ" else "log", viewModel)
+                FunctionKey(if (isSecondMode) "e" else "π", viewModel)
             }
 
             // Row 3
@@ -92,7 +102,7 @@ fun ScientificScreen(
             }
             // Row 6
             Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("C", Modifier.weight(1f), textColor = AccentRed) { viewModel.onEvent(ScientificEvent.OnClear) }
+                CalcButton("C", Modifier.weight(1f), textColor = AccentRed, contentDescription = "Clear") { viewModel.onEvent(ScientificEvent.OnClear) }
                 CalcButton("0", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput("0")) }
                 CalcButton(".", Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput(".")) }
                 CalcButton("⌫", Modifier.weight(1f), textColor = AccentOrange) { viewModel.onEvent(ScientificEvent.OnDelete) }
@@ -100,4 +110,10 @@ fun ScientificScreen(
             }
         }
     }
+}
+
+// Sends the key label; ScientificViewModel maps it to the parser syntax via ScientificFunctions
+@Composable
+private fun RowScope.FunctionKey(label: String, viewModel: ScientificViewModel) {
+    CalcButton(label, Modifier.weight(1f)) { viewModel.onEvent(ScientificEvent.OnInput(label)) }
 }

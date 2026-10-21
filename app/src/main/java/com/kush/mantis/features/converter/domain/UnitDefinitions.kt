@@ -9,14 +9,14 @@ object UnitDefinitions {
         UnitDefinition("Centimeter", "cm", 0.01),
         UnitDefinition("Inch", "in", 0.0254),
         UnitDefinition("Foot", "ft", 0.3048),
-        UnitDefinition("Mile", "mi", 1609.34)
+        UnitDefinition("Mile", "mi", 1609.344)
     )
 
     val Weight = listOf(
         UnitDefinition("Gram", "g", 1.0),
         UnitDefinition("Kilogram", "kg", 1000.0),
-        UnitDefinition("Pound", "lb", 453.592),
-        UnitDefinition("Ounce", "oz", 28.3495)
+        UnitDefinition("Pound", "lb", 453.59237),
+        UnitDefinition("Ounce", "oz", 28.349523125)
     )
 
     val Temperature = listOf(

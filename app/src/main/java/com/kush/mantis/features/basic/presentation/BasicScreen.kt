@@ -36,7 +36,6 @@ fun BasicScreen(
             expression = expression,
             onExpressionChange = { viewModel.onEvent(BasicCalcEvent.OnExpressionChange(it)) },
             result = result,
-            swapInputOutput = true,
             modifier = Modifier.weight(0.40f)
         )
         // Keypad
@@ -86,20 +85,24 @@ fun BasicScreen(
                         horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        androidx.compose.material3.Text(
+                        // Shrinks instead of wrapping at large system font sizes
+                        com.kush.mantis.core.ui.components.AutoSizeText(
                             text = "M A N T I S",
                             fontSize = 28.sp,
                             fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold,
                             letterSpacing = 10.sp,
-                            color = titleColor
+                            color = titleColor,
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                         )
                         Spacer(modifier = Modifier.height(2.dp))
-                        androidx.compose.material3.Text(
+                        com.kush.mantis.core.ui.components.AutoSizeText(
                             text = "PRECISION CALCULATOR",
                             fontSize = 9.sp,
+                            minFontSize = 6.sp,
                             fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                             letterSpacing = 4.sp,
-                            color = subtitleColor
+                            color = subtitleColor,
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                         )
                     }
                 }
@@ -133,7 +136,7 @@ fun BasicScreen(
             }
             // Row 4
             Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("C", Modifier.weight(1f), textColor = AccentRed) { viewModel.onEvent(BasicCalcEvent.OnClearClick) }
+                CalcButton("C", Modifier.weight(1f), textColor = AccentRed, contentDescription = "Clear") { viewModel.onEvent(BasicCalcEvent.OnClearClick) }
                 CalcButton("0", Modifier.weight(1f)) { viewModel.onEvent(BasicCalcEvent.OnNumberClick("0")) }
                 CalcButton(".", Modifier.weight(1f)) { viewModel.onEvent(BasicCalcEvent.OnNumberClick(".")) }
                 CalcButton("⌫", Modifier.weight(1f), textColor = AccentOrange) { viewModel.onEvent(BasicCalcEvent.OnDeleteClick) }
