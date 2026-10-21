@@ -32,15 +32,15 @@ class ConvertUnitUseCaseTest {
         val kelvin = UnitDefinition("Kelvin", "K", 1.0)
 
         // 0 C = 32 F
-        assertEquals("32", convertUnitUseCase("0", "Temperature", celsius, fahrenheit))
+        assertEquals("32", convertUnitUseCase("0", "Temp", celsius, fahrenheit))
         
         // 100 C = 212 F
-        assertEquals("212", convertUnitUseCase("100", "Temperature", celsius, fahrenheit))
+        assertEquals("212", convertUnitUseCase("100", "Temp", celsius, fahrenheit))
 
         // 32 F = 0 C
-        assertEquals("0", convertUnitUseCase("32", "Temperature", fahrenheit, celsius))
+        assertEquals("0", convertUnitUseCase("32", "Temp", fahrenheit, celsius))
 
         // 0 C = 273.15 K
-        assertEquals("273.15", convertUnitUseCase("0", "Temperature", celsius, kelvin))
+        assertEquals("273.15", convertUnitUseCase("0", "Temp", celsius, kelvin))
     }
 }

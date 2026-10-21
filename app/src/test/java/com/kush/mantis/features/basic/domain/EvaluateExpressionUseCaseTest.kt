@@ -39,8 +39,8 @@ class EvaluateExpressionUseCaseTest {
     }
 
     @Test
-    fun `evaluate invalid expression returns Error`() {
-        assertEquals("Error", evaluateExpressionUseCase("2+*3"))
-        assertEquals("Error", evaluateExpressionUseCase("1/0"))
+    fun `evaluate invalid expression returns NaN`() {
+        assertEquals("NaN", evaluateExpressionUseCase("2+*3"))
+        assertEquals("NaN", evaluateExpressionUseCase("1/0"))
     }
 }
