@@ -1,6 +1,7 @@
 package com.kush.mantis.features.basic.domain
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.mariuszgromada.math.mxparser.License
@@ -18,8 +19,8 @@ class EvaluateExpressionUseCaseTest {
     @Test
     fun `evaluate basic arithmetic correctly`() {
         assertEquals("4", evaluateExpressionUseCase("2+2"))
-        assertEquals("10", evaluateExpressionUseCase("5*2"))
-        assertEquals("3", evaluateExpressionUseCase("9/3"))
+        assertEquals("10", evaluateExpressionUseCase("5×2"))
+        assertEquals("3", evaluateExpressionUseCase("9÷3"))
         assertEquals("-1", evaluateExpressionUseCase("4-5"))
     }
 
@@ -33,14 +34,24 @@ class EvaluateExpressionUseCaseTest {
     fun `evaluate degree and radian modes for trig`() {
         // sin(30 degrees) = 0.5
         assertEquals("0.5", evaluateExpressionUseCase("sin(30)", isDegreeMode = true))
-        
+
         // sin(pi/2 radians) = 1
         assertEquals("1", evaluateExpressionUseCase("sin(pi/2)", isDegreeMode = false))
     }
 
     @Test
-    fun `evaluate invalid expression returns NaN`() {
-        assertEquals("NaN", evaluateExpressionUseCase("2+*3"))
-        assertEquals("NaN", evaluateExpressionUseCase("1/0"))
+    fun `invalid, undefined and overflowing expressions return Error`() {
+        assertEquals("Error", evaluateExpressionUseCase("2+*3"))
+        assertEquals("Error", evaluateExpressionUseCase("1/0"))
+        assertEquals("Error", evaluateExpressionUseCase("tan(90)"))
+        assertEquals("Error", evaluateExpressionUseCase("10^400"))
+        assertNull(evaluateExpressionUseCase.evaluate("log10(0)"))
+        assertEquals("", evaluateExpressionUseCase("  "))
+    }
+
+    @Test
+    fun `missing closing brackets are added automatically`() {
+        assertEquals("0.5", evaluateExpressionUseCase("sin(30"))
+        assertEquals("20", evaluateExpressionUseCase("((2+3)*4"))
     }
 }

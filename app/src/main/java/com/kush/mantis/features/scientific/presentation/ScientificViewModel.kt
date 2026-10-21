@@ -1,7 +1,10 @@
 package com.kush.mantis.features.scientific.presentation
 
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.kush.mantis.core.util.CursorUtil
+import com.kush.mantis.core.util.NumberFormatter
 import com.kush.mantis.features.basic.domain.EvaluateExpressionUseCase
 import com.kush.mantis.features.scientific.domain.ScientificFunctions
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,8 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import androidx.compose.ui.text.input.TextFieldValue
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,32 +31,52 @@ class ScientificViewModel @Inject constructor(
     private val _isDegreeMode = MutableStateFlow(true)
     val isDegreeMode: StateFlow<Boolean> = _isDegreeMode.asStateFlow()
 
+    // True right after "=": a number or function starts a new expression, an operator continues from the result
+    private var justEvaluated = false
+
     fun onEvent(event: ScientificEvent) {
         when (event) {
             is ScientificEvent.OnInput -> {
                 val mappedInput = ScientificFunctions.functionMap[event.input] ?: event.input
-                _expression.value = com.kush.mantis.core.util.CursorUtil.insertText(_expression.value, mappedInput)
+                if (justEvaluated && !ScientificFunctions.continuesExpression(mappedInput)) {
+                    _expression.value = CursorUtil.clear()
+                }
+                if (mappedInput == "." && !CursorUtil.canInsertDecimal(_expression.value)) return
+                _expression.value = CursorUtil.insertText(_expression.value, mappedInput)
+                justEvaluated = false
             }
             is ScientificEvent.OnClear -> {
-                _expression.value = com.kush.mantis.core.util.CursorUtil.clear()
+                _expression.value = CursorUtil.clear()
                 _result.value = ""
+                justEvaluated = false
             }
             is ScientificEvent.OnDelete -> {
                 if (_expression.value.text.isNotEmpty()) {
-                    _expression.value = com.kush.mantis.core.util.CursorUtil.deleteText(_expression.value)
+                    _expression.value = CursorUtil.deleteText(_expression.value)
                 }
+                justEvaluated = false
             }
             is ScientificEvent.OnEquals -> {
-                val finalResult = evaluateExpressionUseCase(_expression.value.text, _isDegreeMode.value)
-                if (finalResult.isNotEmpty() && finalResult != "NaN") {
-                    _result.value = finalResult
-                    // Strip grouping commas so the result can be reused in the next expression
-                    val reusable = finalResult.replace(",", "")
-                    _expression.value = androidx.compose.ui.text.input.TextFieldValue(reusable, androidx.compose.ui.text.TextRange(reusable.length))
+                val text = _expression.value.text
+                if (text.isBlank()) return
+                val value = evaluateExpressionUseCase.evaluate(text, _isDegreeMode.value)
+                val display = value?.let { NumberFormatter.formatResult(it) }
+                val reusable = value?.let { NumberFormatter.toExpression(it) }
+                if (display == null || reusable == null) {
+                    _result.value = EvaluateExpressionUseCase.ERROR
+                    return
                 }
+                _result.value = display
+                _expression.value = TextFieldValue(reusable, TextRange(reusable.length))
+                justEvaluated = true
             }
             is ScientificEvent.OnExpressionChange -> {
+                val previous = _expression.value
                 _expression.value = event.value
+                // The text field also reports no-op updates; only real edits or cursor moves count
+                if (event.value.text != previous.text || event.value.selection != previous.selection) {
+                    justEvaluated = false
+                }
             }
             is ScientificEvent.ToggleSecondMode -> {
                 _isSecondMode.update { !it }

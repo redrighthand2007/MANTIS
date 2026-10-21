@@ -16,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.kush.mantis.core.ui.components.CalcButton
 import com.kush.mantis.core.ui.components.TopHeader
 import com.kush.mantis.core.ui.components.DisplayPanel
+import com.kush.mantis.features.programmer.domain.BaseConverter
 import com.kush.mantis.ui.theme.AccentOrange
 import com.kush.mantis.ui.theme.AccentRed
 import com.kush.mantis.ui.theme.MantisGreen
@@ -43,6 +44,7 @@ fun ProgrammerScreen(
             expression = expression,
             onExpressionChange = { viewModel.onEvent(ProgrammerEvent.OnExpressionChange(it)) },
             result = result,
+            readOnly = true,
             modifier = Modifier.weight(0.40f)
         )
         // 6 Equal Rows (1: PillSelector, 2: Hex, 3-6: Keypad)
@@ -82,49 +84,59 @@ fun ProgrammerScreen(
 
             // Row 2: Hex Letters
             Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("A", Modifier.weight(1f), textColor = if(activeBase == 16) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(activeBase == 16) viewModel.onEvent(ProgrammerEvent.OnInput("A")) }
-                CalcButton("B", Modifier.weight(1f), textColor = if(activeBase == 16) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(activeBase == 16) viewModel.onEvent(ProgrammerEvent.OnInput("B")) }
-                CalcButton("C", Modifier.weight(1f), textColor = if(activeBase == 16) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(activeBase == 16) viewModel.onEvent(ProgrammerEvent.OnInput("C")) }
-                CalcButton("D", Modifier.weight(1f), textColor = if(activeBase == 16) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(activeBase == 16) viewModel.onEvent(ProgrammerEvent.OnInput("D")) }
-                CalcButton("E", Modifier.weight(1f), textColor = if(activeBase == 16) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(activeBase == 16) viewModel.onEvent(ProgrammerEvent.OnInput("E")) }
-                CalcButton("F", Modifier.weight(1f), textColor = if(activeBase == 16) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(activeBase == 16) viewModel.onEvent(ProgrammerEvent.OnInput("F")) }
+                DigitKey("A", activeBase, viewModel)
+                DigitKey("B", activeBase, viewModel)
+                DigitKey("C", activeBase, viewModel)
+                DigitKey("D", activeBase, viewModel)
+                DigitKey("E", activeBase, viewModel)
+                DigitKey("F", activeBase, viewModel)
             }
             
             // Row 3
             Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("7", Modifier.weight(1f), textColor = if(activeBase >= 8) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(activeBase >= 8) viewModel.onEvent(ProgrammerEvent.OnInput("7")) }
-                CalcButton("8", Modifier.weight(1f), textColor = if(activeBase >= 10) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(activeBase >= 10) viewModel.onEvent(ProgrammerEvent.OnInput("8")) }
-                CalcButton("9", Modifier.weight(1f), textColor = if(activeBase >= 10) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(activeBase >= 10) viewModel.onEvent(ProgrammerEvent.OnInput("9")) }
+                DigitKey("7", activeBase, viewModel)
+                DigitKey("8", activeBase, viewModel)
+                DigitKey("9", activeBase, viewModel)
                 CalcButton("<<", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ProgrammerEvent.OnBitwiseOp("<<")) }
                 CalcButton(">>", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ProgrammerEvent.OnBitwiseOp(">>")) }
             }
             
             // Row 4
             Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("4", Modifier.weight(1f), textColor = if(activeBase >= 8) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(activeBase >= 8) viewModel.onEvent(ProgrammerEvent.OnInput("4")) }
-                CalcButton("5", Modifier.weight(1f), textColor = if(activeBase >= 8) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(activeBase >= 8) viewModel.onEvent(ProgrammerEvent.OnInput("5")) }
-                CalcButton("6", Modifier.weight(1f), textColor = if(activeBase >= 8) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(activeBase >= 8) viewModel.onEvent(ProgrammerEvent.OnInput("6")) }
+                DigitKey("4", activeBase, viewModel)
+                DigitKey("5", activeBase, viewModel)
+                DigitKey("6", activeBase, viewModel)
                 CalcButton("XOR", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ProgrammerEvent.OnBitwiseOp("XOR")) }
                 CalcButton("NOT", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ProgrammerEvent.OnBitwiseOp("NOT")) }
             }
             
             // Row 5
             Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("1", Modifier.weight(1f)) { viewModel.onEvent(ProgrammerEvent.OnInput("1")) }
-                CalcButton("2", Modifier.weight(1f), textColor = if(activeBase >= 8) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(activeBase >= 8) viewModel.onEvent(ProgrammerEvent.OnInput("2")) }
-                CalcButton("3", Modifier.weight(1f), textColor = if(activeBase >= 8) MaterialTheme.colorScheme.onSurface else Color.Gray) { if(activeBase >= 8) viewModel.onEvent(ProgrammerEvent.OnInput("3")) }
+                DigitKey("1", activeBase, viewModel)
+                DigitKey("2", activeBase, viewModel)
+                DigitKey("3", activeBase, viewModel)
                 CalcButton("AND", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ProgrammerEvent.OnBitwiseOp("AND")) }
                 CalcButton("OR", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ProgrammerEvent.OnBitwiseOp("OR")) }
             }
             
             // Row 6
             Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("C", Modifier.weight(1f), textColor = AccentRed) { viewModel.onEvent(ProgrammerEvent.OnClear) }
-                CalcButton("0", Modifier.weight(1f)) { viewModel.onEvent(ProgrammerEvent.OnInput("0")) }
-                CalcButton(".", Modifier.weight(1f), textColor = Color.Gray) {}
+                CalcButton("C", Modifier.weight(1f), textColor = AccentRed, contentDescription = "Clear") { viewModel.onEvent(ProgrammerEvent.OnClear) }
+                DigitKey("0", activeBase, viewModel)
+                CalcButton(".", Modifier.weight(1f), enabled = false) {}
                 CalcButton("⌫", Modifier.weight(1f), textColor = AccentOrange) { viewModel.onEvent(ProgrammerEvent.OnDelete) }
                 CalcButton("=", Modifier.weight(1f), color = MantisGreen, textColor = Color.Black) { viewModel.onEvent(ProgrammerEvent.OnEquals) }
             }
         }
     }
+}
+
+// Digits that are not valid in the active base (e.g. 2-9 in BIN) are shown disabled
+@Composable
+private fun RowScope.DigitKey(digit: String, activeBase: Int, viewModel: ProgrammerViewModel) {
+    CalcButton(
+        digit,
+        Modifier.weight(1f),
+        enabled = BaseConverter.isValidDigit(digit[0], activeBase)
+    ) { viewModel.onEvent(ProgrammerEvent.OnInput(digit)) }
 }

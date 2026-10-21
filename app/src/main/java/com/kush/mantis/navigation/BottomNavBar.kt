@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -33,10 +34,10 @@ import com.kush.mantis.ui.theme.MantisGreen
 @Composable
 fun BottomNavBar(navController: NavController, isHapticEnabled: Boolean = true) {
     val items = listOf(
-        Pair(Icons.Filled.Calculate, BasicRoute),
-        Pair(Icons.Filled.Science, ScientificRoute),
-        Pair(Icons.Filled.Code, ProgrammerRoute),
-        Pair(Icons.Filled.SwapVert, ConverterRoute)
+        Triple(Icons.Filled.Calculate, BasicRoute, "Basic calculator"),
+        Triple(Icons.Filled.Science, ScientificRoute, "Scientific calculator"),
+        Triple(Icons.Filled.Code, ProgrammerRoute, "Programmer calculator"),
+        Triple(Icons.Filled.SwapVert, ConverterRoute, "Unit converter")
     )
 
     val view = androidx.compose.ui.platform.LocalView.current
@@ -45,6 +46,8 @@ fun BottomNavBar(navController: NavController, isHapticEnabled: Boolean = true) 
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            // Keep the floating bar above the gesture handle / 3-button navigation bar
+            .navigationBarsPadding()
             .padding(horizontal = 24.dp, vertical = 16.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -64,7 +67,7 @@ fun BottomNavBar(navController: NavController, isHapticEnabled: Boolean = true) 
                 val navBackStackEntry = navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry.value?.destination?.route
 
-                items.forEach { (iconVec, routeObj) ->
+                items.forEach { (iconVec, routeObj, label) ->
                     val routeString = routeObj::class.qualifiedName ?: ""
                     val selected = currentRoute == routeString
 
@@ -75,6 +78,7 @@ fun BottomNavBar(navController: NavController, isHapticEnabled: Boolean = true) 
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null, // Custom clean look (no default square ripple)
+                                role = androidx.compose.ui.semantics.Role.Tab,
                                 onClick = {
                                     if (isHapticEnabled && !selected) {
                                         view.performHapticFeedback(android.view.HapticFeedbackConstants.KEYBOARD_TAP)
@@ -90,7 +94,7 @@ fun BottomNavBar(navController: NavController, isHapticEnabled: Boolean = true) 
                     ) {
                         Icon(
                             imageVector = iconVec,
-                            contentDescription = routeString,
+                            contentDescription = label,
                             modifier = Modifier.size(24.dp),
                             tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                         )

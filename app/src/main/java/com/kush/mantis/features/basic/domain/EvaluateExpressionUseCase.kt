@@ -6,27 +6,40 @@ import org.mariuszgromada.math.mxparser.mXparser
 import javax.inject.Inject
 
 class EvaluateExpressionUseCase @Inject constructor() {
-    operator fun invoke(expression: String, isDegreeMode: Boolean = true): String {
-        if (expression.isBlank()) return ""
-        
-        val sanitizedExpression = expression
-            .replace("×", "*")
-            .replace("÷", "/")
-            .replace("A-", "*") // Keep fallback just in case
-        
+
+    /** Returns the numeric result, or null if the expression is invalid or overflows. */
+    fun evaluate(expression: String, isDegreeMode: Boolean = true): Double? {
+        if (expression.isBlank()) return null
+
+        val sanitizedExpression = closeOpenBrackets(
+            expression
+                .replace("×", "*")
+                .replace("÷", "/")
+        )
+
         if (isDegreeMode) {
             mXparser.setDegreesMode()
         } else {
             mXparser.setRadiansMode()
         }
-        
-        val e = Expression(sanitizedExpression)
-        val result = e.calculate()
-        
-        return if (result.isNaN()) {
-            "NaN"
-        } else {
-            NumberFormatter.formatResult(result)
-        }
+
+        val result = Expression(sanitizedExpression).calculate()
+        return if (result.isNaN() || result.isInfinite()) null else result
+    }
+
+    operator fun invoke(expression: String, isDegreeMode: Boolean = true): String {
+        if (expression.isBlank()) return ""
+        val result = evaluate(expression, isDegreeMode) ?: return ERROR
+        return NumberFormatter.formatResult(result) ?: ERROR
+    }
+
+    // Lets users leave trailing brackets open, e.g. "sin(30" evaluates as "sin(30)"
+    private fun closeOpenBrackets(expression: String): String {
+        val missing = expression.count { it == '(' } - expression.count { it == ')' }
+        return if (missing > 0) expression + ")".repeat(missing) else expression
+    }
+
+    companion object {
+        const val ERROR = "Error"
     }
 }

@@ -8,11 +8,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
-
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -26,7 +24,7 @@ fun DisplayPanel(
     onExpressionChange: (TextFieldValue) -> Unit,
     result: String,
     modifier: Modifier = Modifier,
-    swapInputOutput: Boolean = false
+    readOnly: Boolean = false
 ) {
     Column(
         modifier = modifier
@@ -53,9 +51,12 @@ fun DisplayPanel(
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     DisableSoftKeyboard {
+                        // Long expressions scroll inside the field instead of overflowing the card
                         BasicTextField(
                             value = expression,
                             onValueChange = onExpressionChange,
+                            readOnly = readOnly,
+                            maxLines = 2,
                             textStyle = TextStyle(
                                 fontSize = 32.sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -68,7 +69,7 @@ fun DisplayPanel(
                 }
             }
         }
-        
+
         // Bottom Box (Output)
         Card(
             modifier = Modifier.fillMaxWidth().weight(1f),
@@ -88,12 +89,14 @@ fun DisplayPanel(
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     SelectionContainer {
-                        Text(
+                        AutoSizeText(
                             text = result,
                             fontSize = 48.sp,
+                            minFontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface,
-                            maxLines = 1
+                            contentAlignment = Alignment.CenterEnd,
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                 }
