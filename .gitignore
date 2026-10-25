@@ -44,6 +44,7 @@ captures/
 # Keystore files (for security)
 *.jks
 *.keystore
+keystore.properties
 
 # Working docs (not for repo)
 implementation_plan.md
