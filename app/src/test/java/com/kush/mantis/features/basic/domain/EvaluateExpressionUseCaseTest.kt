@@ -2,6 +2,7 @@ package com.kush.mantis.features.basic.domain
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 import org.junit.Test
 import org.mariuszgromada.math.mxparser.License
@@ -13,7 +14,7 @@ class EvaluateExpressionUseCaseTest {
     @Before
     fun setup() {
         License.iConfirmNonCommercialUse("Kush")
-        evaluateExpressionUseCase = EvaluateExpressionUseCase()
+        evaluateExpressionUseCase = EvaluateExpressionUseCase(Dispatchers.Unconfined)
     }
 
     @Test
@@ -53,5 +54,16 @@ class EvaluateExpressionUseCaseTest {
     fun `missing closing brackets are added automatically`() {
         assertEquals("0.5", evaluateExpressionUseCase("sin(30"))
         assertEquals("20", evaluateExpressionUseCase("((2+3)*4"))
+    }
+
+    @Test
+    fun `expressions over the length limit are rejected`() {
+        assertNull(evaluateExpressionUseCase.evaluate("1+".repeat(150) + "1"))
+        assertEquals("100", evaluateExpressionUseCase("1+".repeat(99) + "1"))
+    }
+
+    @Test
+    fun `async evaluation returns the same result`() = kotlinx.coroutines.test.runTest {
+        assertEquals(0.5, evaluateExpressionUseCase.evaluateAsync("sin(30)")!!, 1e-12)
     }
 }

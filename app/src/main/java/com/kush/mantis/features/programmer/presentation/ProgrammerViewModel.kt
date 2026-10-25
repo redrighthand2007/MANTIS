@@ -2,6 +2,7 @@ package com.kush.mantis.features.programmer.presentation
 
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.kush.mantis.features.programmer.domain.BaseConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,7 +12,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class ProgrammerViewModel @Inject constructor() : ViewModel() {
+class ProgrammerViewModel @Inject constructor(
+    private val savedState: SavedStateHandle
+) : ViewModel() {
 
     private val _expression = MutableStateFlow(TextFieldValue("0", TextRange(1)))
     val expression: StateFlow<TextFieldValue> = _expression.asStateFlow()
@@ -40,6 +43,19 @@ class ProgrammerViewModel @Inject constructor() : ViewModel() {
     // After "=", NOT or an operator, the next digit starts a new number instead of appending
     private var replaceOnNextDigit = false
     private var resultValue: Long? = null
+
+    init {
+        // Restore the calculation after Android kills the app in the background
+        savedState.get<Int>(KEY_BASE)?.let { _activeBase.value = it }
+        accumulator = savedState.get<Long>(KEY_ACCUMULATOR)
+        pendingOperator = savedState.get<String>(KEY_OPERATOR)
+        operand = savedState.get<Long>(KEY_OPERAND) ?: 0L
+        operandText = savedState.get<String>(KEY_OPERAND_TEXT) ?: "0"
+        operandTyped = savedState.get<Boolean>(KEY_OPERAND_TYPED) ?: false
+        replaceOnNextDigit = savedState.get<Boolean>(KEY_REPLACE) ?: false
+        resultValue = savedState.get<Long>(KEY_RESULT)
+        refresh()
+    }
 
     fun onEvent(event: ProgrammerEvent) {
         when (event) {
@@ -176,6 +192,26 @@ class ProgrammerViewModel @Inject constructor() : ViewModel() {
         _inputString.value = operandText
         _currentValue.value = operand
         _result.value = resultValue?.let { format(it) } ?: ""
+
+        savedState[KEY_BASE] = _activeBase.value
+        savedState[KEY_ACCUMULATOR] = accumulator
+        savedState[KEY_OPERATOR] = pendingOperator
+        savedState[KEY_OPERAND] = operand
+        savedState[KEY_OPERAND_TEXT] = operandText
+        savedState[KEY_OPERAND_TYPED] = operandTyped
+        savedState[KEY_REPLACE] = replaceOnNextDigit
+        savedState[KEY_RESULT] = resultValue
+    }
+
+    private companion object {
+        const val KEY_BASE = "base"
+        const val KEY_ACCUMULATOR = "accumulator"
+        const val KEY_OPERATOR = "operator"
+        const val KEY_OPERAND = "operand"
+        const val KEY_OPERAND_TEXT = "operandText"
+        const val KEY_OPERAND_TYPED = "operandTyped"
+        const val KEY_REPLACE = "replaceOnNextDigit"
+        const val KEY_RESULT = "result"
     }
 }
 

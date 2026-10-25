@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kush.mantis.core.ui.components.CalcButton
 import com.kush.mantis.core.ui.components.DisplayPanel
 import com.kush.mantis.ui.theme.AccentOrange
@@ -46,7 +46,8 @@ fun BasicScreen(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // MANTIS Logo Box - Creative Banner
+            // MANTIS Logo Box - Creative Banner (hidden in split-screen to leave room for the keys)
+            if (!com.kush.mantis.core.ui.components.isCompactHeight()) {
             val isDark = androidx.compose.foundation.isSystemInDarkTheme()
             val gradientStart = if (isDark) androidx.compose.ui.graphics.Color(0xFF053621) else androidx.compose.ui.graphics.Color(0xFFC4F9D9)
             val gradientEnd = if (isDark) com.kush.mantis.ui.theme.MantisGreenDark else com.kush.mantis.ui.theme.MantisGreenLight
@@ -106,6 +107,8 @@ fun BasicScreen(
                         )
                     }
                 }
+            }
+
             }
 
             val rowModifier = Modifier.weight(1f)

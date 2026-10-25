@@ -3,18 +3,25 @@ package com.kush.mantis.features.scientific.presentation
 import com.kush.mantis.features.basic.domain.EvaluateExpressionUseCase
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import androidx.lifecycle.SavedStateHandle
+import com.kush.mantis.testutil.MainDispatcherRule
+import kotlinx.coroutines.Dispatchers
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mariuszgromada.math.mxparser.License
 
 class ScientificViewModelTest {
+
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
 
     private lateinit var viewModel: ScientificViewModel
 
     @Before
     fun setup() {
         License.iConfirmNonCommercialUse("Kush")
-        viewModel = ScientificViewModel(EvaluateExpressionUseCase())
+        viewModel = ScientificViewModel(EvaluateExpressionUseCase(Dispatchers.Unconfined), SavedStateHandle())
     }
 
     private fun keys(vararg labels: String) = labels.forEach { viewModel.onEvent(ScientificEvent.OnInput(it)) }
@@ -73,5 +80,25 @@ class ScientificViewModelTest {
         viewModel.onEvent(ScientificEvent.OnClear)
         keys("1", ".", "2", ".", "3")
         assertEquals("1.23", viewModel.expression.value.text)
+    }
+
+    @Test
+    fun `angle mode and second mode survive the app being killed`() {
+        val savedState = SavedStateHandle()
+        val first = ScientificViewModel(EvaluateExpressionUseCase(Dispatchers.Unconfined), savedState)
+        first.onEvent(ScientificEvent.ToggleAngleMode)
+        first.onEvent(ScientificEvent.ToggleSecondMode)
+        first.onEvent(ScientificEvent.OnInput("π"))
+
+        val restored = ScientificViewModel(EvaluateExpressionUseCase(Dispatchers.Unconfined), savedState)
+        assertEquals(false, restored.isDegreeMode.value)
+        assertEquals(true, restored.isSecondMode.value)
+        assertEquals("pi", restored.expression.value.text)
+    }
+
+    @Test
+    fun `factorial of a decimal uses gamma`() {
+        viewModel.onEvent(ScientificEvent.ToggleSecondMode)
+        assertEquals("1.3293403882", calc("1", ".", "5", "n!"))
     }
 }

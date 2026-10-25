@@ -2,18 +2,25 @@ package com.kush.mantis.features.basic.presentation
 
 import com.kush.mantis.features.basic.domain.EvaluateExpressionUseCase
 import org.junit.Assert.assertEquals
+import androidx.lifecycle.SavedStateHandle
+import com.kush.mantis.testutil.MainDispatcherRule
+import kotlinx.coroutines.Dispatchers
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mariuszgromada.math.mxparser.License
 
 class BasicViewModelTest {
+
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
 
     private lateinit var viewModel: BasicViewModel
 
     @Before
     fun setup() {
         License.iConfirmNonCommercialUse("Kush")
-        viewModel = BasicViewModel(EvaluateExpressionUseCase())
+        viewModel = BasicViewModel(EvaluateExpressionUseCase(Dispatchers.Unconfined), SavedStateHandle())
     }
 
     private fun type(input: String) {
@@ -82,5 +89,38 @@ class BasicViewModelTest {
         type("1÷3000000000")
         equals()
         assertEquals("3.33333333333333E-10", viewModel.result.value)
+    }
+
+    @Test
+    fun `input is capped so a calculation can never freeze the app`() {
+        type("1+".repeat(150))
+        assertEquals(EvaluateExpressionUseCase.MAX_EXPRESSION_LENGTH, viewModel.expression.value.text.length)
+
+        val pasted = androidx.compose.ui.text.input.TextFieldValue("9".repeat(500))
+        viewModel.onEvent(BasicCalcEvent.OnExpressionChange(pasted))
+        assertEquals(EvaluateExpressionUseCase.MAX_EXPRESSION_LENGTH, viewModel.expression.value.text.length)
+    }
+
+    @Test
+    fun `expression and result survive the app being killed in the background`() {
+        val savedState = SavedStateHandle()
+        val first = BasicViewModel(EvaluateExpressionUseCase(Dispatchers.Unconfined), savedState)
+        "7+2".forEach {
+            val key = it.toString()
+            if (key == "+") first.onEvent(BasicCalcEvent.OnOperatorClick(key)) else first.onEvent(BasicCalcEvent.OnNumberClick(key))
+        }
+
+        val restored = BasicViewModel(EvaluateExpressionUseCase(Dispatchers.Unconfined), savedState)
+        assertEquals("7+2", restored.expression.value.text)
+        restored.onEvent(BasicCalcEvent.OnEqualsClick)
+        assertEquals("9", BasicViewModel(EvaluateExpressionUseCase(Dispatchers.Unconfined), savedState).result.value)
+    }
+
+    @Test
+    fun `factorial key result is correct for decimals`() {
+        type("2.5")
+        viewModel.onEvent(BasicCalcEvent.OnOperatorClick("!"))
+        equals()
+        assertEquals("3.3233509704", viewModel.result.value)
     }
 }
