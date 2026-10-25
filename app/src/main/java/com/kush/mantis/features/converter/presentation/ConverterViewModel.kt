@@ -1,5 +1,6 @@
 package com.kush.mantis.features.converter.presentation
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.kush.mantis.features.converter.domain.ConvertUnitUseCase
 import com.kush.mantis.features.converter.domain.UnitDefinition
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ConverterViewModel @Inject constructor(
-    private val convertUnitUseCase: ConvertUnitUseCase
+    private val convertUnitUseCase: ConvertUnitUseCase,
+    private val savedState: SavedStateHandle
 ) : ViewModel() {
 
     private val _category = MutableStateFlow("Length")
@@ -35,6 +37,16 @@ class ConverterViewModel @Inject constructor(
     val outputValue: StateFlow<String> = _outputValue.asStateFlow()
 
     init {
+        // Restore the conversion after Android kills the app in the background
+        savedState.get<String>(KEY_CATEGORY)?.let { saved ->
+            UnitDefinitions.Categories[saved]?.let { units ->
+                _category.value = saved
+                _units.value = units
+                units.firstOrNull { it.symbol == savedState.get<String>(KEY_FROM) }?.let { _fromUnit.value = it }
+                units.firstOrNull { it.symbol == savedState.get<String>(KEY_TO) }?.let { _toUnit.value = it }
+                savedState.get<String>(KEY_INPUT)?.let { _inputValue.value = it }
+            }
+        }
         recalculate()
     }
 
@@ -111,10 +123,18 @@ class ConverterViewModel @Inject constructor(
 
     private fun recalculate() {
         _outputValue.value = convertUnitUseCase(_inputValue.value, _category.value, _fromUnit.value, _toUnit.value)
+        savedState[KEY_CATEGORY] = _category.value
+        savedState[KEY_FROM] = _fromUnit.value.symbol
+        savedState[KEY_TO] = _toUnit.value.symbol
+        savedState[KEY_INPUT] = _inputValue.value
     }
 
     companion object {
         private const val MAX_DIGITS = 15
+        private const val KEY_CATEGORY = "category"
+        private const val KEY_FROM = "fromUnit"
+        private const val KEY_TO = "toUnit"
+        private const val KEY_INPUT = "input"
     }
 }
 

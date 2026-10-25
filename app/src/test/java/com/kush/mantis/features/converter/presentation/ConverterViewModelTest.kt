@@ -1,5 +1,6 @@
 package com.kush.mantis.features.converter.presentation
 
+import androidx.lifecycle.SavedStateHandle
 import com.kush.mantis.features.converter.domain.ConvertUnitUseCase
 import com.kush.mantis.features.converter.domain.UnitDefinitions
 import org.junit.Assert.assertEquals
@@ -12,7 +13,7 @@ class ConverterViewModelTest {
 
     @Before
     fun setup() {
-        viewModel = ConverterViewModel(ConvertUnitUseCase())
+        viewModel = ConverterViewModel(ConvertUnitUseCase(), SavedStateHandle())
     }
 
     private fun type(keys: String) = keys.forEach { viewModel.onEvent(ConverterEvent.OnInput(it.toString())) }
@@ -105,5 +106,22 @@ class ConverterViewModelTest {
         viewModel.onEvent(ConverterEvent.ToggleSign)
         viewModel.onEvent(ConverterEvent.OnDelete)
         assertEquals("0", input)
+    }
+
+    @Test
+    fun `category, units and input survive the app being killed`() {
+        val savedState = SavedStateHandle()
+        val first = ConverterViewModel(ConvertUnitUseCase(), savedState)
+        first.onEvent(ConverterEvent.SetCategory("Temp"))
+        first.onEvent(ConverterEvent.OnInput("4"))
+        first.onEvent(ConverterEvent.OnInput("0"))
+        first.onEvent(ConverterEvent.ToggleSign)
+
+        val restored = ConverterViewModel(ConvertUnitUseCase(), savedState)
+        assertEquals("Temp", restored.category.value)
+        assertEquals("°C", restored.fromUnit.value.symbol)
+        assertEquals("°F", restored.toUnit.value.symbol)
+        assertEquals("-40", restored.inputValue.value)
+        assertEquals("-40", restored.outputValue.value)
     }
 }

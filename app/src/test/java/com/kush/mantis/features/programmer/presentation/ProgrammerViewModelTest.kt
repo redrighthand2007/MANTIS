@@ -1,5 +1,6 @@
 package com.kush.mantis.features.programmer.presentation
 
+import androidx.lifecycle.SavedStateHandle
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -10,7 +11,7 @@ class ProgrammerViewModelTest {
 
     @Before
     fun setup() {
-        viewModel = ProgrammerViewModel()
+        viewModel = ProgrammerViewModel(SavedStateHandle())
     }
 
     private fun type(digits: String) = digits.forEach { viewModel.onEvent(ProgrammerEvent.OnInput(it.toString())) }
@@ -100,5 +101,21 @@ class ProgrammerViewModelTest {
     fun `equals without a second operand reuses the first`() {
         type("5"); op("XOR"); equals()
         assertEquals("0", viewModel.result.value)
+    }
+
+    @Test
+    fun `unfinished calculation survives the app being killed`() {
+        val savedState = SavedStateHandle()
+        val first = ProgrammerViewModel(savedState)
+        first.onEvent(ProgrammerEvent.SetBase(16))
+        "F".forEach { first.onEvent(ProgrammerEvent.OnInput(it.toString())) }
+        first.onEvent(ProgrammerEvent.OnBitwiseOp("AND"))
+        first.onEvent(ProgrammerEvent.OnInput("3"))
+
+        val restored = ProgrammerViewModel(savedState)
+        assertEquals(16, restored.activeBase.value)
+        assertEquals("F AND 3", restored.expression.value.text)
+        restored.onEvent(ProgrammerEvent.OnEquals)
+        assertEquals("3", restored.result.value)
     }
 }

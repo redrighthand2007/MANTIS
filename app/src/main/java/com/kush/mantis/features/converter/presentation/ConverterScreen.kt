@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.kush.mantis.core.ui.components.AutoSizeText
 import com.kush.mantis.core.ui.components.CalcButton
 import com.kush.mantis.core.ui.components.TopHeader
@@ -33,6 +33,8 @@ fun ConverterScreen(
     val outputValue by viewModel.outputValue.collectAsState()
 
     var categoryExpanded by remember { mutableStateOf(false) }
+    // Short windows (split-screen) drop the labels and padding so the numbers are not clipped
+    val compact = com.kush.mantis.core.ui.components.isCompactHeight()
     var fromExpanded by remember { mutableStateOf(false) }
     var toExpanded by remember { mutableStateOf(false) }
 
@@ -56,9 +58,9 @@ fun ConverterScreen(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 Box(
-                    modifier = Modifier.fillMaxSize().padding(16.dp)
+                    modifier = Modifier.fillMaxSize().padding(if (compact) 8.dp else 16.dp)
                 ) {
-                    Text(
+                    if (!compact) Text(
                         text = "Input",
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
@@ -84,9 +86,9 @@ fun ConverterScreen(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 Box(
-                    modifier = Modifier.fillMaxSize().padding(16.dp)
+                    modifier = Modifier.fillMaxSize().padding(if (compact) 8.dp else 16.dp)
                 ) {
-                    Text(
+                    if (!compact) Text(
                         text = "Output",
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),

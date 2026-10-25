@@ -26,11 +26,15 @@ fun DisplayPanel(
     modifier: Modifier = Modifier,
     readOnly: Boolean = false
 ) {
+    // Short windows (split-screen) drop the labels and padding so the numbers are not clipped
+    val compact = isCompactHeight()
+    val innerPadding = if (compact) 8.dp else 16.dp
+
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .padding(horizontal = 16.dp, vertical = if (compact) 4.dp else 8.dp),
+        verticalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 8.dp)
     ) {
         // Top Box (Typing Inputs)
         Card(
@@ -38,9 +42,9 @@ fun DisplayPanel(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
         ) {
             Box(
-                modifier = Modifier.fillMaxSize().padding(16.dp)
+                modifier = Modifier.fillMaxSize().padding(innerPadding)
             ) {
-                Text(
+                if (!compact) Text(
                     text = "Input",
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
@@ -56,9 +60,9 @@ fun DisplayPanel(
                             value = expression,
                             onValueChange = onExpressionChange,
                             readOnly = readOnly,
-                            maxLines = 2,
+                            maxLines = if (compact) 1 else 2,
                             textStyle = TextStyle(
-                                fontSize = 32.sp,
+                                fontSize = if (compact) 22.sp else 32.sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 textAlign = TextAlign.End
                             ),
@@ -76,9 +80,9 @@ fun DisplayPanel(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
         ) {
             Box(
-                modifier = Modifier.fillMaxSize().padding(16.dp)
+                modifier = Modifier.fillMaxSize().padding(innerPadding)
             ) {
-                Text(
+                if (!compact) Text(
                     text = "Output",
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
