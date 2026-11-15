@@ -23,9 +23,8 @@ import com.kush.mantis.features.scientific.presentation.ScientificScreen
 /** Keeps keys a comfortable size on tablets and foldables instead of stretching edge to edge. */
 private val MaxContentWidth = 600.dp
 
-// A quick crossfade between calculators: the old screen fades out slightly faster than the new one fades in
-private const val FADE_IN_MS = 650
-private const val FADE_OUT_MS = 350
+// The only screen transition in the app: a plain crossfade between calculators, same duration both ways
+private const val FADE_MS = 500
 
 @Composable
 fun MantisNavHost() {
@@ -42,10 +41,10 @@ fun MantisNavHost() {
                 navController = navController,
                 startDestination = BasicRoute,
                 modifier = Modifier.widthIn(max = MaxContentWidth),
-                enterTransition = { fadeIn(tween(FADE_IN_MS)) },
-                exitTransition = { fadeOut(tween(FADE_OUT_MS)) },
-                popEnterTransition = { fadeIn(tween(FADE_IN_MS)) },
-                popExitTransition = { fadeOut(tween(FADE_OUT_MS)) }
+                enterTransition = { fadeIn(tween(FADE_MS)) },
+                exitTransition = { fadeOut(tween(FADE_MS)) },
+                popEnterTransition = { fadeIn(tween(FADE_MS)) },
+                popExitTransition = { fadeOut(tween(FADE_MS)) }
             ) {
                 composable<BasicRoute> { BasicScreen() }
                 composable<ScientificRoute> { ScientificScreen() }
