@@ -6,7 +6,6 @@
 
 **Four precision calculators in one private, offline Android app:** Basic, Scientific, Programmer and Unit Converter.
 
-[![Android CI](https://github.com/redrighthand2007/MANTIS/actions/workflows/android.yml/badge.svg)](https://github.com/redrighthand2007/MANTIS/actions/workflows/android.yml)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.2-7F52FF?logo=kotlin&logoColor=white)
 ![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?logo=jetpackcompose&logoColor=white)
 ![Min SDK](https://img.shields.io/badge/minSdk-26-3DDC84?logo=android&logoColor=white)
@@ -40,7 +39,7 @@
 - **A real state machine for Programmer mode.** Left-to-right chaining, 64-bit overflow rejection, shift clamping (Kotlin's `shl` wraps at 64) and two's-complement display across bases ([`ProgrammerViewModel`](app/src/main/java/com/kush/mantis/features/programmer/presentation/ProgrammerViewModel.kt)).
 - **Survives process death.** Every mode restores the in-progress calculation through `SavedStateHandle` when Android reclaims memory.
 - **Reusable keypad DSL.** Screens are declared row by row from shared composables (`KeypadRow`, `OperatorKey`, `EqualsKey`, …), keeping each screen short and consistent ([`Keypad.kt`](app/src/main/java/com/kush/mantis/core/ui/components/Keypad.kt)).
-- **Tested and shrunk.** 68 unit tests cover the engine, formatting, every ViewModel and state restoration; CI runs tests, lint and a build on every push; release builds use R8 (≈1.5 MB APK).
+- **Tested and shrunk.** 68 unit tests cover the engine, formatting, every ViewModel and state restoration; release builds use R8 (≈1.5 MB APK).
 
 ## 🏗️ Architecture
 
@@ -67,7 +66,6 @@ flowchart LR
 | Navigation | Navigation Compose with type-safe routes |
 | Math engine | [mXparser](https://mathparser.org/) |
 | Testing | JUnit 4, kotlinx-coroutines-test |
-| CI | GitHub Actions |
 | Platform | Android 8.0+ (API 26), targets Android 16 (API 36) |
 
 ## 📁 Project Structure
@@ -87,8 +85,7 @@ MANTIS/
 │   ├── navigation/       # Routes, animated NavHost, floating tab bar
 │   └── ui/theme/         # Colours, typography, Material theme
 ├── app/src/test/         # Unit tests
-├── docs/                 # Privacy policy, store listing, screenshots
-└── .github/workflows/    # CI
+└── docs/                 # Privacy policy, store listing, screenshots
 ```
 
 ## ⚙️ Getting Started
