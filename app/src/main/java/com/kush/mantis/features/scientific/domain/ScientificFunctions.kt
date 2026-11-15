@@ -13,13 +13,10 @@ object ScientificFunctions {
         "log" to "log10(",
         "√" to "√(",
         "³√" to "root(3, ",
-        "x²" to "^2",
-        "x³" to "^3",
         "xʸ" to "^",
         "eˣ" to "e^",
         "10ˣ" to "10^",
         "n!" to "!",
-        "|x|" to "abs(",
         "π" to "pi",
         "e" to "e"
     )

@@ -52,3 +52,8 @@ walkthrough.md
 github_guide.md
 mantis_project_blueprint.md
 github_repo_setup.md
+RELEASE_GUIDE.md
+*.code-workspace
+
+# Signing keys folder
+keys/

@@ -1,5 +1,6 @@
 package com.kush.mantis.core.ui.components
 
+import android.view.HapticFeedbackConstants
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -21,7 +22,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kush.mantis.core.util.HapticHelper
 
 // What screen readers announce for symbol keys ("C" is omitted: it is also a hex digit)
 private val spokenLabels = mapOf(
@@ -44,6 +44,7 @@ private val spokenLabels = mapOf(
     ">>" to "Shift right"
 )
 
+/** A single keypad key with press animation, haptic feedback and a screen reader label. */
 @Composable
 fun CalcButton(
     symbol: String,
@@ -51,28 +52,25 @@ fun CalcButton(
     color: Color = MaterialTheme.colorScheme.surfaceVariant,
     textColor: Color = MaterialTheme.colorScheme.onSurface,
     enabled: Boolean = true,
-    hapticEnabled: Boolean = true,
     contentDescription: String? = null,
     onClick: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val view = LocalView.current
-
-    val scale = if (isPressed) 0.95f else 1f
     val label = contentDescription ?: spokenLabels[symbol] ?: symbol
 
     Surface(
         modifier = modifier
             .padding(4.dp)
-            .scale(scale)
+            .scale(if (isPressed) 0.95f else 1f)
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
                 enabled = enabled,
                 role = Role.Button
             ) {
-                HapticHelper.performHapticFeedback(view, hapticEnabled)
+                view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                 onClick()
             }
             .semantics { this.contentDescription = label },

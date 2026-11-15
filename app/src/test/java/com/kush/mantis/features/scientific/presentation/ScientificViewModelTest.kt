@@ -1,11 +1,11 @@
 package com.kush.mantis.features.scientific.presentation
 
-import com.kush.mantis.features.basic.domain.EvaluateExpressionUseCase
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import androidx.lifecycle.SavedStateHandle
+import com.kush.mantis.features.basic.domain.EvaluateExpressionUseCase
 import com.kush.mantis.testutil.MainDispatcherRule
 import kotlinx.coroutines.Dispatchers
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

@@ -1,8 +1,9 @@
 package com.kush.mantis.features.basic.domain
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
-import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 import org.junit.Test
 import org.mariuszgromada.math.mxparser.License
@@ -63,7 +64,7 @@ class EvaluateExpressionUseCaseTest {
     }
 
     @Test
-    fun `async evaluation returns the same result`() = kotlinx.coroutines.test.runTest {
+    fun `async evaluation returns the same result`() = runTest {
         assertEquals(0.5, evaluateExpressionUseCase.evaluateAsync("sin(30)")!!, 1e-12)
     }
 }

@@ -1,10 +1,11 @@
 package com.kush.mantis.features.basic.presentation
 
-import com.kush.mantis.features.basic.domain.EvaluateExpressionUseCase
-import org.junit.Assert.assertEquals
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
+import com.kush.mantis.features.basic.domain.EvaluateExpressionUseCase
 import com.kush.mantis.testutil.MainDispatcherRule
 import kotlinx.coroutines.Dispatchers
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -96,7 +97,7 @@ class BasicViewModelTest {
         type("1+".repeat(150))
         assertEquals(EvaluateExpressionUseCase.MAX_EXPRESSION_LENGTH, viewModel.expression.value.text.length)
 
-        val pasted = androidx.compose.ui.text.input.TextFieldValue("9".repeat(500))
+        val pasted = TextFieldValue("9".repeat(500))
         viewModel.onEvent(BasicCalcEvent.OnExpressionChange(pasted))
         assertEquals(EvaluateExpressionUseCase.MAX_EXPRESSION_LENGTH, viewModel.expression.value.text.length)
     }

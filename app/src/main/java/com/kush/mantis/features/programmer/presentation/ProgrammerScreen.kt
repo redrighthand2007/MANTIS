@@ -1,142 +1,87 @@
 package com.kush.mantis.features.programmer.presentation
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.kush.mantis.core.ui.components.CalcButton
-import com.kush.mantis.core.ui.components.TopHeader
+import com.kush.mantis.core.ui.components.CalculatorLayout
+import com.kush.mantis.core.ui.components.ClearKey
+import com.kush.mantis.core.ui.components.DeleteKey
 import com.kush.mantis.core.ui.components.DisplayPanel
+import com.kush.mantis.core.ui.components.EqualsKey
+import com.kush.mantis.core.ui.components.Key
+import com.kush.mantis.core.ui.components.KeypadRow
+import com.kush.mantis.core.ui.components.KeypadSlot
+import com.kush.mantis.core.ui.components.OperatorKey
+import com.kush.mantis.core.ui.components.PillSelector
 import com.kush.mantis.features.programmer.domain.BaseConverter
-import com.kush.mantis.ui.theme.AccentOrange
-import com.kush.mantis.ui.theme.AccentRed
-import com.kush.mantis.ui.theme.MantisGreen
+
+private val bases = listOf("HEX" to 16, "DEC" to 10, "OCT" to 8, "BIN" to 2)
 
 @Composable
-fun ProgrammerScreen(
-    viewModel: ProgrammerViewModel = hiltViewModel()
-) {
-    val currentValue by viewModel.currentValue.collectAsState()
+fun ProgrammerScreen(viewModel: ProgrammerViewModel = hiltViewModel()) {
     val activeBase by viewModel.activeBase.collectAsState()
-    val inputString by viewModel.inputString.collectAsState()
-
     val expression by viewModel.expression.collectAsState()
     val result by viewModel.result.collectAsState()
+    val operator = { op: String -> viewModel.onEvent(ProgrammerEvent.OnBitwiseOp(op)) }
 
-    var baseExpanded by remember { mutableStateOf(false) }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+    CalculatorLayout(
+        display = { modifier ->
+            // Read-only: keypad events are the only input, so the display can't drift from the calculation
+            DisplayPanel(
+                expression = expression,
+                onExpressionChange = { viewModel.onEvent(ProgrammerEvent.OnExpressionChange(it)) },
+                result = result,
+                readOnly = true,
+                modifier = modifier
+            )
+        }
     ) {
-
-        DisplayPanel(
-            expression = expression,
-            onExpressionChange = { viewModel.onEvent(ProgrammerEvent.OnExpressionChange(it)) },
-            result = result,
-            readOnly = true,
-            modifier = Modifier.weight(0.40f)
-        )
-        // 6 Equal Rows (1: PillSelector, 2: Hex, 3-6: Keypad)
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.60f)
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            val rowModifier = Modifier.weight(1f)
-            
-            // Row 1: PillSelector
-            Box(modifier = rowModifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                com.kush.mantis.core.ui.components.PillSelector(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-                    items = listOf("HEX", "DEC", "OCT", "BIN"),
-                    selectedItem = when (activeBase) {
-                        16 -> "HEX"
-                        10 -> "DEC"
-                        8 -> "OCT"
-                        2 -> "BIN"
-                        else -> "DEC"
-                    },
-                    onItemSelected = { selected ->
-                        val base = when (selected) {
-                            "HEX" -> 16
-                            "DEC" -> 10
-                            "OCT" -> 8
-                            "BIN" -> 2
-                            else -> 10
-                        }
-                        viewModel.onEvent(ProgrammerEvent.SetBase(base))
-                    }
-                )
-            }
-
-            // Row 2: Hex Letters
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                DigitKey("A", activeBase, viewModel)
-                DigitKey("B", activeBase, viewModel)
-                DigitKey("C", activeBase, viewModel)
-                DigitKey("D", activeBase, viewModel)
-                DigitKey("E", activeBase, viewModel)
-                DigitKey("F", activeBase, viewModel)
-            }
-            
-            // Row 3
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                DigitKey("7", activeBase, viewModel)
-                DigitKey("8", activeBase, viewModel)
-                DigitKey("9", activeBase, viewModel)
-                CalcButton("<<", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ProgrammerEvent.OnBitwiseOp("<<")) }
-                CalcButton(">>", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ProgrammerEvent.OnBitwiseOp(">>")) }
-            }
-            
-            // Row 4
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                DigitKey("4", activeBase, viewModel)
-                DigitKey("5", activeBase, viewModel)
-                DigitKey("6", activeBase, viewModel)
-                CalcButton("XOR", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ProgrammerEvent.OnBitwiseOp("XOR")) }
-                CalcButton("NOT", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ProgrammerEvent.OnBitwiseOp("NOT")) }
-            }
-            
-            // Row 5
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                DigitKey("1", activeBase, viewModel)
-                DigitKey("2", activeBase, viewModel)
-                DigitKey("3", activeBase, viewModel)
-                CalcButton("AND", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ProgrammerEvent.OnBitwiseOp("AND")) }
-                CalcButton("OR", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(ProgrammerEvent.OnBitwiseOp("OR")) }
-            }
-            
-            // Row 6
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("C", Modifier.weight(1f), textColor = AccentRed, contentDescription = "Clear") { viewModel.onEvent(ProgrammerEvent.OnClear) }
-                DigitKey("0", activeBase, viewModel)
-                CalcButton(".", Modifier.weight(1f), enabled = false) {}
-                CalcButton("⌫", Modifier.weight(1f), textColor = AccentOrange) { viewModel.onEvent(ProgrammerEvent.OnDelete) }
-                CalcButton("=", Modifier.weight(1f), color = MantisGreen, textColor = Color.Black) { viewModel.onEvent(ProgrammerEvent.OnEquals) }
-            }
+        KeypadSlot {
+            PillSelector(
+                items = bases.map { it.first },
+                selectedItem = bases.first { it.second == activeBase }.first,
+                onItemSelected = { name -> viewModel.onEvent(ProgrammerEvent.SetBase(bases.first { it.first == name }.second)) },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+            )
+        }
+        KeypadRow {
+            listOf("A", "B", "C", "D", "E", "F").forEach { DigitKey(it, activeBase, viewModel) }
+        }
+        KeypadRow {
+            listOf("7", "8", "9").forEach { DigitKey(it, activeBase, viewModel) }
+            OperatorKey("<<") { operator("<<") }
+            OperatorKey(">>") { operator(">>") }
+        }
+        KeypadRow {
+            listOf("4", "5", "6").forEach { DigitKey(it, activeBase, viewModel) }
+            OperatorKey("XOR") { operator("XOR") }
+            OperatorKey("NOT") { operator("NOT") }
+        }
+        KeypadRow {
+            listOf("1", "2", "3").forEach { DigitKey(it, activeBase, viewModel) }
+            OperatorKey("AND") { operator("AND") }
+            OperatorKey("OR") { operator("OR") }
+        }
+        KeypadRow {
+            ClearKey { viewModel.onEvent(ProgrammerEvent.OnClear) }
+            DigitKey("0", activeBase, viewModel)
+            Key(".", enabled = false) {}
+            DeleteKey { viewModel.onEvent(ProgrammerEvent.OnDelete) }
+            EqualsKey { viewModel.onEvent(ProgrammerEvent.OnEquals) }
         }
     }
 }
 
-// Digits that are not valid in the active base (e.g. 2-9 in BIN) are shown disabled
+/** Digits that are not valid in the active base (e.g. 2-9 in BIN) are shown disabled. */
 @Composable
 private fun RowScope.DigitKey(digit: String, activeBase: Int, viewModel: ProgrammerViewModel) {
-    CalcButton(
-        digit,
-        Modifier.weight(1f),
-        enabled = BaseConverter.isValidDigit(digit[0], activeBase)
-    ) { viewModel.onEvent(ProgrammerEvent.OnInput(digit)) }
+    Key(digit, enabled = BaseConverter.isValidDigit(digit[0], activeBase)) {
+        viewModel.onEvent(ProgrammerEvent.OnInput(digit))
+    }
 }

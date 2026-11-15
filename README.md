@@ -1,110 +1,141 @@
-# Mantis (Precision n' Power)
-The ultimate offline calculator. Basic. Scientific. Programmer. Converter.
+<div align="center">
+
+<img src="design/logo/wings_playstore_512.png" width="96" alt="Mantis logo" />
+
+# Mantis
+
+**Four precision calculators in one private, offline Android app:** Basic, Scientific, Programmer and Unit Converter.
+
+[![Android CI](https://github.com/redrighthand2007/MANTIS/actions/workflows/android.yml/badge.svg)](https://github.com/redrighthand2007/MANTIS/actions/workflows/android.yml)
+![Kotlin](https://img.shields.io/badge/Kotlin-2.2-7F52FF?logo=kotlin&logoColor=white)
+![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?logo=jetpackcompose&logoColor=white)
+![Min SDK](https://img.shields.io/badge/minSdk-26-3DDC84?logo=android&logoColor=white)
+![Target SDK](https://img.shields.io/badge/targetSdk-36-3DDC84?logo=android&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+</div>
 
 ## 📸 Screenshots
+
 | Basic | Scientific | Programmer | Converter | Dark mode |
 |---|---|---|---|---|
 | ![Basic](docs/store-assets/screenshots/1_basic.png) | ![Scientific](docs/store-assets/screenshots/2_scientific.png) | ![Programmer](docs/store-assets/screenshots/3_programmer.png) | ![Converter](docs/store-assets/screenshots/4_converter.png) | ![Dark mode](docs/store-assets/screenshots/5_scientific_dark.png) |
 
 ## ✨ Features
-- **Basic & Scientific:** Trigonometry and inverse trig (via the **2nd** key), roots, logs, powers, π and e, with a Degree/Radian toggle, powered by mXparser.
+
+- **Basic & Scientific:** Trigonometry and its inverses (via the **2nd** key), roots, logs, powers, π and e, with a Degree/Radian toggle.
 - **True factorials:** Whole numbers are exact; decimals use the gamma function (2.5! = 3.3233…).
-- **Programmer Mode:** DEC, HEX, OCT and BIN with chained bitwise ops (AND, OR, XOR, NOT, `<<`, `>>`) on full 64-bit values.
-- **Unit Converter:** Length, Weight, Temperature and number bases, updating live as you type, with exact international unit definitions.
-- **Chain Calculations:** Answers flow back into the input at full precision, so you can keep calculating.
-- **Precision:** 15 significant digits, scientific notation for tiny and huge results, and clear "Error" messages instead of silent wrong answers.
-- **Adaptive Design:** Light and dark themes, edge-to-edge, large font sizes, split-screen, tablets, and screen reader labels on every key.
-- **100% Offline & Private:** Zero tracking. Zero ads. Zero databases. No internet permission. See the [privacy policy](docs/privacy-policy.md).
+- **Programmer:** DEC, HEX, OCT and BIN with chained bitwise operations (AND, OR, XOR, NOT, `<<`, `>>`) on full 64-bit values.
+- **Unit Converter:** Length, Weight, Temperature and number bases, updating live as you type, using exact international unit definitions.
+- **Chained calculations:** Answers flow back into the input at full precision, so you can keep calculating.
+- **Precision:** 15 significant digits, scientific notation for very small and very large results, and clear "Error" messages instead of silent wrong answers.
+- **Adaptive design:** Light and dark themes, edge-to-edge, large font sizes, split-screen, tablets, right-to-left languages, and screen reader labels on every key.
+- **100% offline & private:** No internet permission, no ads, no tracking. See the [privacy policy](docs/privacy-policy.md).
 
-## 🎯 Why This Project?
-Most calculator apps today are either too basic, fragmented across multiple apps, or bloated with intrusive ads and unnecessary permissions.
+## 🧠 Engineering Highlights
 
-Mantis solves this by providing:
-- Four professional-grade math engines unified into one app.
-- A clean grid layout that adapts to any screen size.
-- A completely private, offline calculation environment.
+- **Floating-point output you can trust.** Results are rounded to 15 significant digits with `BigDecimal`, so `0.1 + 0.2` shows `0.3`, tiny values like `3.33E-10` never collapse to `0`, and huge values never show fake trailing digits ([`NumberFormatter`](app/src/main/java/com/kush/mantis/core/util/NumberFormatter.kt)).
+- **Correct maths where the library falls short.** mXparser's `!` silently floors decimals (`2.5! = 6`), so postfix factorials are rewritten into a custom function that is exact for integers and uses Gamma for decimals ([`FactorialFunction`](app/src/main/java/com/kush/mantis/features/basic/domain/FactorialFunction.kt)).
+- **A UI that can't freeze.** Expressions are evaluated on a background dispatcher, with an input length cap measured against real parser timings; stale results are discarded if the user keeps typing ([`EvaluateExpressionUseCase`](app/src/main/java/com/kush/mantis/features/basic/domain/EvaluateExpressionUseCase.kt)).
+- **A real state machine for Programmer mode.** Left-to-right chaining, 64-bit overflow rejection, shift clamping (Kotlin's `shl` wraps at 64) and two's-complement display across bases ([`ProgrammerViewModel`](app/src/main/java/com/kush/mantis/features/programmer/presentation/ProgrammerViewModel.kt)).
+- **Survives process death.** Every mode restores the in-progress calculation through `SavedStateHandle` when Android reclaims memory.
+- **Reusable keypad DSL.** Screens are declared row by row from shared composables (`KeypadRow`, `OperatorKey`, `EqualsKey`, …), keeping each screen short and consistent ([`Keypad.kt`](app/src/main/java/com/kush/mantis/core/ui/components/Keypad.kt)).
+- **Tested and shrunk.** 68 unit tests cover the engine, formatting, every ViewModel and state restoration; CI runs tests, lint and a build on every push; release builds use R8 (≈1.5 MB APK).
+
+## 🏗️ Architecture
+
+MVVM with unidirectional data flow: screens send events, ViewModels update `StateFlow`s, and pure domain classes do the maths.
+
+```mermaid
+flowchart LR
+    UI["Compose screens<br/>(Basic, Scientific, Programmer, Converter)"] -- events --> VM["ViewModels<br/>(StateFlow + SavedStateHandle)"]
+    VM -- state --> UI
+    VM --> UC["Domain<br/>EvaluateExpressionUseCase · FactorialFunction<br/>BaseConverter · ConvertUnitUseCase"]
+    UC --> MX["mXparser"]
+    UC --> NF["NumberFormatter"]
+```
 
 ## 🛠️ Tech Stack
-- **Frontend:** Android (100% Kotlin, Jetpack Compose, Material 3)
-- **Math Engine:** mXparser (Robust mathematical evaluation)
-- **Architecture:** MVVM, Clean Architecture, Unidirectional Data Flow (UDF)
-- **Dependency Injection:** Dagger Hilt
-- **Navigation:** Jetpack Navigation Compose
-- **Targets:** Android 8.0+ (API 26), built for Android 16 (API 36)
+
+| Area | Choice |
+|---|---|
+| Language | Kotlin 2.2 |
+| UI | Jetpack Compose, Material 3 |
+| Architecture | MVVM, Clean Architecture, Unidirectional Data Flow |
+| Async | Kotlin Coroutines and StateFlow |
+| Dependency injection | Dagger Hilt |
+| Navigation | Navigation Compose with type-safe routes |
+| Math engine | [mXparser](https://mathparser.org/) |
+| Testing | JUnit 4, kotlinx-coroutines-test |
+| CI | GitHub Actions |
+| Platform | Android 8.0+ (API 26), targets Android 16 (API 36) |
 
 ## 📁 Project Structure
+
 ```text
 MANTIS/
 ├── app/src/main/java/com/kush/mantis/
-│   ├── core/           # Shared UI components, Formatters, DI modules
-│   ├── features/       # Feature modules
-│   │   ├── basic/      # Basic Math UI, ViewModel, EvaluateUseCase, factorial
-│   │   ├── scientific/ # Trigonometric engine and state
-│   │   ├── programmer/ # Base-N conversions & bitwise logic
-│   │   └── converter/  # Unit conversion engine
-│   ├── navigation/     # Animated route transitions & Bottom bar
-│   └── ui/             # Material 3 colors, typography, themes
-├── docs/               # Privacy policy, Play Store listing and store assets
-└── README.md
+│   ├── core/
+│   │   ├── di/           # Hilt module (coroutine dispatcher)
+│   │   ├── ui/components # Keypad DSL, display panel, auto-sizing text, selectors
+│   │   └── util/         # Number formatting, cursor editing
+│   ├── features/
+│   │   ├── basic/        # Expression evaluation, factorial, Basic screen
+│   │   ├── scientific/   # Function mapping, 2nd/DEG modes
+│   │   ├── programmer/   # Base conversion, bitwise state machine
+│   │   └── converter/    # Unit definitions and conversion
+│   ├── navigation/       # Routes, animated NavHost, floating tab bar
+│   └── ui/theme/         # Colours, typography, Material theme
+├── app/src/test/         # Unit tests
+├── docs/                 # Privacy policy, store listing, screenshots
+└── .github/workflows/    # CI
 ```
 
-## ⚙️ Installation
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/redrighthand2007/MANTIS.git
-   cd MANTIS
-   ```
-2. **Open the project:** Open the folder in a recent version of Android Studio.
-3. **Sync Gradle:** Allow Android Studio to sync the Gradle files and download all required dependencies.
+## ⚙️ Getting Started
 
-## 🚀 Usage
-- Build and run the app on an Android Emulator or physical device (Android 8.0 / API 26+).
-- Use the floating bottom bar to switch between calculation modes.
-- Press **=** to evaluate; your answer stays in the input so you can keep building on it.
+```bash
+git clone https://github.com/redrighthand2007/MANTIS.git
+cd MANTIS
+```
+
+Open the folder in a recent version of Android Studio, let Gradle sync, then run the `app` configuration on an emulator or a device with Android 8.0 or newer.
 
 ## 🧪 Tests
+
 ```bash
 ./gradlew testDebugUnitTest
 ```
-Unit tests cover the expression engine, number formatting, every mode's ViewModel, and state restoration.
 
 ## 📦 Release Build
-1. Create an upload key in Android Studio (*Build → Generate Signed App Bundle → Create new*) and keep the `.jks` file backed up.
-2. Copy `keystore.properties.example` to `keystore.properties` and fill in your key details. This file is git-ignored.
-3. Build the Play Store bundle:
+
+1. Create an upload key in Android Studio (*Build → Generate Signed App Bundle → Create new*).
+2. Copy `keystore.properties.example` to `keystore.properties` and fill in your key details (the file is git-ignored).
+3. Build the bundle:
    ```bash
    ./gradlew bundleRelease
    ```
-   The signed bundle is written to `app/build/outputs/bundle/release/app-release.aab`. Release builds are shrunk with R8.
-
-Store listing text and graphics are in [`docs/play-store-listing.md`](docs/play-store-listing.md) and [`docs/store-assets/`](docs/store-assets/).
-
-## 🧠 How It Works
-- **Architecture:** The app follows the MVVM (Model-View-ViewModel) architecture and uses Jetpack Compose for declarative UI. State is managed via Kotlin StateFlow and Coroutines, and survives the app being closed in the background.
-- **Calculation Flow:** When the user hits `=`, the expression is evaluated by mXparser on a background thread, and the full-precision answer is pushed back into the input so calculations can be chained.
+   The signed bundle is written to `app/build/outputs/bundle/release/app-release.aab`.
 
 ## 🗺️ Roadmap
-- [x] Basic & Scientific Calculator Engines
-- [x] Programmer & Converter Modes
-- [x] Modern UI: Adaptive Banners, Floating Taskbar
-- [x] Smooth sliding navigation transitions
-- [x] "Evaluate on Equals" continuous math engine
-- [x] Split-screen, large text and right-to-left language support
-- [ ] Custom Landscape Mode optimization
-- [ ] Additional Unit Converter modules (Volume, Area, Speed)
+
+- [x] Basic, Scientific, Programmer and Converter modes
+- [x] Precision formatting and gamma-based factorials
+- [x] Split-screen, tablet, large text and right-to-left support
+- [x] State restoration and background evaluation
+- [ ] Calculation history
+- [ ] More converter categories (Volume, Area, Speed)
+- [ ] Dedicated landscape layout
 
 ## 🤝 Contributing
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/redrighthand2007/MANTIS/issues) if you want to contribute.
+
+Issues and pull requests are welcome on the [issues page](https://github.com/redrighthand2007/MANTIS/issues).
 
 ## 📄 License
-The Mantis source code is distributed under the MIT License. See [LICENSE](LICENSE) for more information.
+
+The Mantis source code is released under the [MIT License](LICENSE).
 
 Mantis uses [mXparser](https://mathparser.org/), which has its own dual license: free for non-commercial use, with a paid license required for commercial use.
 
 ## 👨‍💻 Author
-**Kush**
-GitHub: [@redrighthand2007](https://github.com/redrighthand2007)
 
-## 🙌 Acknowledgements
-- [Jetpack Compose](https://developer.android.com/jetpack/compose) for modern Android UI
-- [mXparser](https://mathparser.org/) for the incredibly robust math evaluation engine
+**Kush** · GitHub [@redrighthand2007](https://github.com/redrighthand2007)

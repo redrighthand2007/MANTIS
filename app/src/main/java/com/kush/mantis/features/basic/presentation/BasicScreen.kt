@@ -1,149 +1,145 @@
 package com.kush.mantis.features.basic.presentation
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.kush.mantis.core.ui.components.CalcButton
+import com.kush.mantis.core.ui.components.AutoSizeText
+import com.kush.mantis.core.ui.components.CalculatorLayout
+import com.kush.mantis.core.ui.components.ClearKey
+import com.kush.mantis.core.ui.components.DeleteKey
 import com.kush.mantis.core.ui.components.DisplayPanel
-import com.kush.mantis.ui.theme.AccentOrange
-import com.kush.mantis.ui.theme.AccentRed
+import com.kush.mantis.core.ui.components.EqualsKey
+import com.kush.mantis.core.ui.components.Key
+import com.kush.mantis.core.ui.components.KeypadRow
+import com.kush.mantis.core.ui.components.OperatorKey
+import com.kush.mantis.core.ui.components.isCompactHeight
 import com.kush.mantis.ui.theme.MantisGreen
-
-import com.kush.mantis.core.ui.components.TopHeader
+import com.kush.mantis.ui.theme.MantisGreenDark
+import com.kush.mantis.ui.theme.MantisGreenLight
 
 @Composable
-fun BasicScreen(
-    viewModel: BasicViewModel = hiltViewModel()
-) {
+fun BasicScreen(viewModel: BasicViewModel = hiltViewModel()) {
     val expression by viewModel.expression.collectAsState()
     val result by viewModel.result.collectAsState()
+    val number = { digit: String -> viewModel.onEvent(BasicCalcEvent.OnNumberClick(digit)) }
+    val operator = { symbol: String -> viewModel.onEvent(BasicCalcEvent.OnOperatorClick(symbol)) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+    CalculatorLayout(
+        display = { modifier ->
+            DisplayPanel(
+                expression = expression,
+                onExpressionChange = { viewModel.onEvent(BasicCalcEvent.OnExpressionChange(it)) },
+                result = result,
+                modifier = modifier
+            )
+        }
     ) {
+        // Hidden in split-screen to leave room for the keys
+        if (!isCompactHeight()) {
+            MantisBanner(Modifier.fillMaxWidth().weight(2f))
+        }
+        KeypadRow {
+            listOf("7", "8", "9").forEach { Key(it) { number(it) } }
+            OperatorKey("(") { operator("(") }
+            OperatorKey(")") { operator(")") }
+        }
+        KeypadRow {
+            listOf("4", "5", "6").forEach { Key(it) { number(it) } }
+            OperatorKey("+") { operator("+") }
+            OperatorKey("-") { operator("-") }
+        }
+        KeypadRow {
+            listOf("1", "2", "3").forEach { Key(it) { number(it) } }
+            OperatorKey("÷") { operator("÷") }
+            OperatorKey("×") { operator("×") }
+        }
+        KeypadRow {
+            ClearKey { viewModel.onEvent(BasicCalcEvent.OnClearClick) }
+            Key("0") { number("0") }
+            Key(".") { number(".") }
+            DeleteKey { viewModel.onEvent(BasicCalcEvent.OnDeleteClick) }
+            EqualsKey { viewModel.onEvent(BasicCalcEvent.OnEqualsClick) }
+        }
+    }
+}
 
-        DisplayPanel(
-            expression = expression,
-            onExpressionChange = { viewModel.onEvent(BasicCalcEvent.OnExpressionChange(it)) },
-            result = result,
-            modifier = Modifier.weight(0.40f)
-        )
-        // Keypad
-        Column(
+/** Branded gradient card with soft decorative circles, tuned for light and dark themes. */
+@Composable
+private fun MantisBanner(modifier: Modifier = Modifier) {
+    val isDark = isSystemInDarkTheme()
+    val gradient = if (isDark) listOf(Color(0xFF053621), MantisGreenDark) else listOf(Color(0xFFC4F9D9), MantisGreenLight)
+    val titleColor = if (isDark) Color.White else MantisGreenDark
+    val subtitleColor = (if (isDark) MantisGreen else MantisGreenDark).copy(alpha = 0.8f)
+
+    Card(
+        modifier = modifier,
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.60f)
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .fillMaxSize()
+                .background(Brush.linearGradient(gradient)),
+            contentAlignment = Alignment.Center
         ) {
-            // MANTIS Logo Box - Creative Banner (hidden in split-screen to leave room for the keys)
-            if (!com.kush.mantis.core.ui.components.isCompactHeight()) {
-            val isDark = androidx.compose.foundation.isSystemInDarkTheme()
-            val gradientStart = if (isDark) androidx.compose.ui.graphics.Color(0xFF053621) else androidx.compose.ui.graphics.Color(0xFFC4F9D9)
-            val gradientEnd = if (isDark) com.kush.mantis.ui.theme.MantisGreenDark else com.kush.mantis.ui.theme.MantisGreenLight
-            val titleColor = if (isDark) androidx.compose.ui.graphics.Color.White else com.kush.mantis.ui.theme.MantisGreenDark
-            val subtitleColor = if (isDark) com.kush.mantis.ui.theme.MantisGreen.copy(alpha = 0.8f) else com.kush.mantis.ui.theme.MantisGreenDark.copy(alpha = 0.8f)
-
-            androidx.compose.material3.Card(
-                modifier = Modifier.fillMaxWidth().weight(2f),
-                elevation = androidx.compose.material3.CardDefaults.cardElevation(defaultElevation = 6.dp),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                drawCircle(
+                    color = Color.White.copy(alpha = if (isDark) 0.03f else 0.25f),
+                    radius = size.minDimension * 1.2f,
+                    center = Offset(size.width * 0.8f, size.height * -0.2f)
+                )
+                drawCircle(
+                    color = Color.White.copy(alpha = if (isDark) 0.02f else 0.20f),
+                    radius = size.minDimension * 0.6f,
+                    center = Offset(size.width * 0.1f, size.height * 1.1f)
+                )
+            }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            brush = androidx.compose.ui.graphics.Brush.linearGradient(
-                                colors = listOf(gradientStart, gradientEnd)
-                            )
-                        ),
-                    contentAlignment = androidx.compose.ui.Alignment.Center
-                ) {
-                    androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
-                        drawCircle(
-                            color = androidx.compose.ui.graphics.Color.White.copy(alpha = if (isDark) 0.03f else 0.25f),
-                            radius = size.minDimension * 1.2f,
-                            center = androidx.compose.ui.geometry.Offset(size.width * 0.8f, size.height * -0.2f)
-                        )
-                        drawCircle(
-                            color = androidx.compose.ui.graphics.Color.White.copy(alpha = if (isDark) 0.02f else 0.20f),
-                            radius = size.minDimension * 0.6f,
-                            center = androidx.compose.ui.geometry.Offset(size.width * 0.1f, size.height * 1.1f)
-                        )
-                    }
-
-                    Column(
-                        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        // Shrinks instead of wrapping at large system font sizes
-                        com.kush.mantis.core.ui.components.AutoSizeText(
-                            text = "M A N T I S",
-                            fontSize = 28.sp,
-                            fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold,
-                            letterSpacing = 10.sp,
-                            color = titleColor,
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        com.kush.mantis.core.ui.components.AutoSizeText(
-                            text = "PRECISION CALCULATOR",
-                            fontSize = 9.sp,
-                            minFontSize = 6.sp,
-                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                            letterSpacing = 4.sp,
-                            color = subtitleColor,
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-                        )
-                    }
-                }
-            }
-
-            }
-
-            val rowModifier = Modifier.weight(1f)
-
-            // Row 1
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("7", Modifier.weight(1f)) { viewModel.onEvent(BasicCalcEvent.OnNumberClick("7")) }
-                CalcButton("8", Modifier.weight(1f)) { viewModel.onEvent(BasicCalcEvent.OnNumberClick("8")) }
-                CalcButton("9", Modifier.weight(1f)) { viewModel.onEvent(BasicCalcEvent.OnNumberClick("9")) }
-                CalcButton("(", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(BasicCalcEvent.OnOperatorClick("(")) }
-                CalcButton(")", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(BasicCalcEvent.OnOperatorClick(")")) }
-            }
-            // Row 2
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("4", Modifier.weight(1f)) { viewModel.onEvent(BasicCalcEvent.OnNumberClick("4")) }
-                CalcButton("5", Modifier.weight(1f)) { viewModel.onEvent(BasicCalcEvent.OnNumberClick("5")) }
-                CalcButton("6", Modifier.weight(1f)) { viewModel.onEvent(BasicCalcEvent.OnNumberClick("6")) }
-                CalcButton("+", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(BasicCalcEvent.OnOperatorClick("+")) }
-                CalcButton("-", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(BasicCalcEvent.OnOperatorClick("-")) }
-            }
-            // Row 3
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("1", Modifier.weight(1f)) { viewModel.onEvent(BasicCalcEvent.OnNumberClick("1")) }
-                CalcButton("2", Modifier.weight(1f)) { viewModel.onEvent(BasicCalcEvent.OnNumberClick("2")) }
-                CalcButton("3", Modifier.weight(1f)) { viewModel.onEvent(BasicCalcEvent.OnNumberClick("3")) }
-                CalcButton("÷", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(BasicCalcEvent.OnOperatorClick("÷")) }
-                CalcButton("×", Modifier.weight(1f), textColor = MantisGreen) { viewModel.onEvent(BasicCalcEvent.OnOperatorClick("×")) }
-            }
-            // Row 4
-            Row(modifier = rowModifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CalcButton("C", Modifier.weight(1f), textColor = AccentRed, contentDescription = "Clear") { viewModel.onEvent(BasicCalcEvent.OnClearClick) }
-                CalcButton("0", Modifier.weight(1f)) { viewModel.onEvent(BasicCalcEvent.OnNumberClick("0")) }
-                CalcButton(".", Modifier.weight(1f)) { viewModel.onEvent(BasicCalcEvent.OnNumberClick(".")) }
-                CalcButton("⌫", Modifier.weight(1f), textColor = AccentOrange) { viewModel.onEvent(BasicCalcEvent.OnDeleteClick) }
-                CalcButton("=", Modifier.weight(1f), color = MantisGreen, textColor = Color.Black) { viewModel.onEvent(BasicCalcEvent.OnEqualsClick) }
+                // Auto-sized so the letter-spaced title never wraps at large system font sizes
+                AutoSizeText(
+                    text = "M A N T I S",
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = 10.sp,
+                    color = titleColor,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                AutoSizeText(
+                    text = "PRECISION CALCULATOR",
+                    fontSize = 9.sp,
+                    minFontSize = 6.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 4.sp,
+                    color = subtitleColor,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                )
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.kush.mantis.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -43,8 +42,8 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun MantisTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = false, // Set false by default to showcase Mantis Green branding
+    // Off by default so the Mantis green branding shows; wallpaper colours need Android 12+
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
