@@ -63,7 +63,6 @@ flowchart LR
 | Architecture | MVVM, Clean Architecture, Unidirectional Data Flow |
 | Async | Kotlin Coroutines and StateFlow |
 | Dependency injection | Dagger Hilt |
-| Navigation | Navigation Compose with type-safe routes |
 | Math engine | [mXparser](https://mathparser.org/) |
 | Testing | JUnit 4, kotlinx-coroutines-test |
 | Platform | Android 8.0+ (API 26), targets Android 16 (API 36) |
@@ -82,7 +81,7 @@ MANTIS/
 │   │   ├── scientific/   # Function mapping, 2nd/DEG modes
 │   │   ├── programmer/   # Base conversion, bitwise state machine
 │   │   └── converter/    # Unit definitions and conversion
-│   ├── navigation/       # Routes, animated NavHost, floating tab bar
+│   ├── navigation/       # Tabs, crossfade host, floating tab bar
 │   └── ui/theme/         # Colours, typography, Material theme
 ├── app/src/test/         # Unit tests
 └── docs/                 # Privacy policy, store listing, screenshots

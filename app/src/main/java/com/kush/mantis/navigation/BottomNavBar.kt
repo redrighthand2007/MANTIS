@@ -14,41 +14,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Calculate
-import androidx.compose.material.icons.filled.Code
-import androidx.compose.material.icons.filled.Science
-import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
-
-private data class Tab(val route: Any, val icon: ImageVector, val label: String)
-
-private val tabs = listOf(
-    Tab(BasicRoute, Icons.Filled.Calculate, "Basic calculator"),
-    Tab(ScientificRoute, Icons.Filled.Science, "Scientific calculator"),
-    Tab(ProgrammerRoute, Icons.Filled.Code, "Programmer calculator"),
-    Tab(ConverterRoute, Icons.Filled.SwapVert, "Unit converter")
-)
 
 /** Floating pill-shaped tab bar that switches between the four calculators. */
 @Composable
-fun BottomNavBar(navController: NavController) {
+fun BottomNavBar(selectedTab: Tab, onTabSelected: (Tab) -> Unit) {
     val view = LocalView.current
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = backStackEntry?.destination?.route
 
     Box(
         modifier = Modifier
@@ -72,8 +52,8 @@ fun BottomNavBar(navController: NavController) {
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                tabs.forEach { tab ->
-                    val selected = currentRoute == routeName(tab.route)
+                Tab.entries.forEach { tab ->
+                    val selected = tab == selectedTab
                     Box(
                         modifier = Modifier
                             .weight(1f)
@@ -84,12 +64,9 @@ fun BottomNavBar(navController: NavController) {
                                 indication = null,
                                 role = Role.Tab,
                                 onClick = {
-                                    if (!selected) view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                                    navController.navigate(tab.route) {
-                                        // Keep each calculator's state when switching tabs
-                                        popUpTo(BasicRoute) { saveState = true }
-                                        launchSingleTop = true
-                                        restoreState = true
+                                    if (!selected) {
+                                        view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                                        onTabSelected(tab)
                                     }
                                 }
                             ),

@@ -4,17 +4,13 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.isSpecified
@@ -22,7 +18,7 @@ import androidx.compose.ui.unit.sp
 
 /**
  * Single-line text that shrinks until it fits its width instead of wrapping or overlapping.
- * Keeps long results and large system font sizes readable.
+ * The size is measured before the first frame is drawn, so the text never flickers or pops in.
  */
 @Composable
 fun AutoSizeText(
@@ -37,10 +33,27 @@ fun AutoSizeText(
     contentAlignment: Alignment = Alignment.Center
 ) {
     BoxWithConstraints(modifier = modifier, contentAlignment = contentAlignment) {
-        val density = LocalDensity.current
-        // Restart sizing whenever the text, width or system font scale changes
-        var scale by remember(text, fontSize, maxWidth, density.fontScale) { mutableFloatStateOf(1f) }
-        var ready by remember(text, fontSize, maxWidth, density.fontScale) { mutableStateOf(false) }
+        val textMeasurer = rememberTextMeasurer()
+        val baseStyle = LocalTextStyle.current
+        val maxWidthPx = constraints.maxWidth
+
+        val scale = remember(text, fontSize, minFontSize, fontWeight, letterSpacing, maxWidthPx, baseStyle) {
+            fun styleAt(factor: Float) = baseStyle.merge(
+                TextStyle(
+                    fontSize = fontSize * factor,
+                    fontWeight = fontWeight,
+                    letterSpacing = if (letterSpacing.isSpecified) letterSpacing * factor else letterSpacing
+                )
+            )
+
+            var fitted = 1f
+            while (fontSize.value * fitted > minFontSize.value) {
+                val width = textMeasurer.measure(text, styleAt(fitted), maxLines = 1, softWrap = false).size.width
+                if (width <= maxWidthPx) break
+                fitted *= 0.9f
+            }
+            fitted
+        }
 
         Text(
             text = text,
@@ -50,17 +63,7 @@ fun AutoSizeText(
             letterSpacing = if (letterSpacing.isSpecified) letterSpacing * scale else letterSpacing,
             textAlign = textAlign,
             maxLines = 1,
-            softWrap = false,
-            style = LocalTextStyle.current,
-            onTextLayout = { layout ->
-                if (layout.hasVisualOverflow && fontSize.value * scale > minFontSize.value) {
-                    scale *= 0.9f
-                } else {
-                    ready = true
-                }
-            },
-            // Hide intermediate oversized frames while shrinking
-            modifier = Modifier.drawWithContent { if (ready) drawContent() }
+            softWrap = false
         )
     }
 }
