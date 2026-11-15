@@ -24,8 +24,8 @@ import com.kush.mantis.features.scientific.presentation.ScientificScreen
 private val MaxContentWidth = 600.dp
 
 // A quick crossfade between calculators: the old screen fades out slightly faster than the new one fades in
-private const val FADE_IN_MS = 220
-private const val FADE_OUT_MS = 150
+private const val FADE_IN_MS = 350
+private const val FADE_OUT_MS = 250
 
 @Composable
 fun MantisNavHost() {
