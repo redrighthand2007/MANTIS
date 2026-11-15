@@ -1,7 +1,14 @@
 package com.kush.mantis.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
@@ -24,7 +31,11 @@ import com.kush.mantis.features.scientific.presentation.ScientificScreen
 
 /** Keeps keys a comfortable size on tablets and foldables instead of stretching edge to edge. */
 private val MaxContentWidth = 600.dp
-private const val SLIDE_DURATION_MS = 300
+
+// A short slide plus a crossfade feels lighter than pushing whole screens across the display
+private const val TRANSITION_MS = 260
+private const val FADE_OUT_MS = 160
+private const val SLIDE_FRACTION = 4
 
 @Composable
 fun MantisNavHost() {
@@ -42,10 +53,10 @@ fun MantisNavHost() {
                 startDestination = BasicRoute,
                 modifier = Modifier.widthIn(max = MaxContentWidth),
                 // Screens slide in the direction of their tab: moving right slides content left
-                enterTransition = { slideInHorizontally(tween(SLIDE_DURATION_MS)) { width -> if (isMovingRight()) width else -width } },
-                exitTransition = { slideOutHorizontally(tween(SLIDE_DURATION_MS)) { width -> if (isMovingRight()) -width else width } },
-                popEnterTransition = { slideInHorizontally(tween(SLIDE_DURATION_MS)) { width -> if (isMovingRight()) width else -width } },
-                popExitTransition = { slideOutHorizontally(tween(SLIDE_DURATION_MS)) { width -> if (isMovingRight()) -width else width } }
+                enterTransition = { tabEnter() },
+                exitTransition = { tabExit() },
+                popEnterTransition = { tabEnter() },
+                popExitTransition = { tabExit() }
             ) {
                 composable<BasicRoute> { BasicScreen() }
                 composable<ScientificRoute> { ScientificScreen() }
@@ -54,6 +65,18 @@ fun MantisNavHost() {
             }
         }
     }
+}
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.tabEnter(): EnterTransition {
+    val direction = if (isMovingRight()) 1 else -1
+    return slideInHorizontally(tween(TRANSITION_MS, easing = FastOutSlowInEasing)) { width -> direction * width / SLIDE_FRACTION } +
+        fadeIn(tween(TRANSITION_MS, easing = LinearOutSlowInEasing))
+}
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.tabExit(): ExitTransition {
+    val direction = if (isMovingRight()) -1 else 1
+    return slideOutHorizontally(tween(TRANSITION_MS, easing = FastOutSlowInEasing)) { width -> direction * width / SLIDE_FRACTION } +
+        fadeOut(tween(FADE_OUT_MS, easing = FastOutLinearInEasing))
 }
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.isMovingRight(): Boolean =
