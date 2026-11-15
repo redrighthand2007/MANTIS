@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="design/logo/wings_playstore_512.png" width="96" alt="Mantis logo" />
+<img src="design/logo/wings_transparent.png" width="110" alt="Mantis logo" />
 
 # Mantis
 
@@ -17,9 +17,9 @@
 
 ## 📸 Screenshots
 
-| Basic | Scientific | Programmer | Converter | Dark mode |
+| Basic | Scientific | Programmer | Converter | Base conversion |
 |---|---|---|---|---|
-| ![Basic](docs/store-assets/screenshots/1_basic.png) | ![Scientific](docs/store-assets/screenshots/2_scientific.png) | ![Programmer](docs/store-assets/screenshots/3_programmer.png) | ![Converter](docs/store-assets/screenshots/4_converter.png) | ![Dark mode](docs/store-assets/screenshots/5_scientific_dark.png) |
+| ![Basic calculator, dark theme](docs/store-assets/screenshots/1_basic.png) | ![Scientific calculator, light theme](docs/store-assets/screenshots/2_scientific.png) | ![Programmer calculator, dark theme](docs/store-assets/screenshots/3_programmer.png) | ![Unit converter, light theme](docs/store-assets/screenshots/4_converter.png) | ![Base conversion, dark theme](docs/store-assets/screenshots/5_base_converter.png) |
 
 ## ✨ Features
 
